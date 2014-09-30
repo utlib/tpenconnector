@@ -1,0 +1,6 @@
+name = T-Pen Connector
+description = Provides the ability to perform transcription of a collection by connecting a collection object to T-Pen.org with a payload of ScaredCanvas manifest.
+core = 7.x
+dependencies[] = islandora
+files[] = includes/Canvas.inc
+files[] = includes/SharedCanvasManifest.inc

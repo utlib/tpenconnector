@@ -1,0 +1,15 @@
+<?php
+/**
+ * hook_menu
+ */
+function tpenconnector_menu() {
+  $items['tpenconnector/get_manifest'] = array(
+    'title' => 'SharedCanvas manifest',
+    'page callback' => 'tpenconnector_get_manifest',
+    'access arguments' => array('access content'),
+    'type' => MENU_NORMAL_ITEM,
+    'file' => 'includes/tpenconnector.inc'
+  );
+
+  return $items;
+}
