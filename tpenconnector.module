@@ -11,5 +11,32 @@ function tpenconnector_menu() {
     'file' => 'includes/tpenconnector.inc'
   );
 
+
+  $items['islandora/object/%islandora_object/transcribe'] = array(
+    'title' => 'Transcribe with T-Pen',
+    'page callback' => 'tpenconnector_get_manifest',
+    'page arguments' => array(2),
+    'type' => MENU_LOCAL_TASK,
+    'access callback' => 'tpenconnector_access',
+    'access arguments' => array(2),
+    'file' => 'includes/tpenconnector.inc'
+  );
+
   return $items;
+}
+
+
+/**
+ * Determines whether or not to show this modules tab.
+ *
+ * @global object $user
+ *
+ * @param FedoraObject $fedora_object
+ *   A FedoraObject.
+ *
+ * @return bool
+ *   Whether the user has access or not.
+ */
+function tpenconnector_access($fedora_object) {
+  return in_array('islandora:bookCModel', $fedora_object->models);
 }
