@@ -11,7 +11,6 @@ function tpenconnector_menu() {
     'file' => 'includes/tpenconnector.inc'
   );
 
-
   $items['islandora/object/%islandora_object/transcribe'] = array(
     'title' => 'Transcribe with T-Pen',
     'page callback' => 'tpenconnector_get_manifest',
@@ -24,7 +23,6 @@ function tpenconnector_menu() {
 
   return $items;
 }
-
 
 /**
  * Determines whether or not to show this modules tab.
