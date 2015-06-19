@@ -12,7 +12,7 @@ function tpenconnector_menu() {
   );
 
   $items['islandora/object/%islandora_object/transcribe'] = array(
-    'title' => 'Transcribe with T-Pen',
+    'title' => 'Transcribe with T-Pen test',
     'page callback' => 'tpenconnector_get_manifest',
     'page arguments' => array(2),
     'type' => MENU_LOCAL_TASK,
@@ -36,5 +36,10 @@ function tpenconnector_menu() {
  *   Whether the user has access or not.
  */
 function tpenconnector_access($fedora_object) {
-  return in_array('islandora:bookCModel', $fedora_object->models);
+
+  $parent_obj = $fedora_object->relationships->get('info:fedora/fedora-system:def/relations-external#', 'isMemberOfCollection');
+
+  $parent_obj_pid = $parent_obj[0]['object']['value'];
+
+  return in_array('islandora:bookCModel', $fedora_object->models) && ($parent_obj_pid !== 'paleography:calligraphybooks');
 }
