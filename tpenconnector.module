@@ -41,5 +41,5 @@ function tpenconnector_access($fedora_object) {
 
   $parent_obj_pid = $parent_obj[0]['object']['value'];
 
-  return in_array('islandora:bookCModel', $fedora_object->models) && ($parent_obj_pid !== 'paleography:calligraphybooks');
+  return in_array('islandora:bookCModel', $fedora_object->models) && ($parent_obj_pid !== 'paleography:calligraphybooks') && user_is_logged_in();
 }
