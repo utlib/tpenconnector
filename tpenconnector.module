@@ -12,7 +12,7 @@ function tpenconnector_menu() {
   );
 
   $items['islandora/object/%islandora_object/transcribe'] = array(
-    'title' => 'Transcribe with T-Pen',
+    'title' => 'Transcribe with T-PEN',
     'page callback' => 'tpenconnector_get_manifest',
     'page arguments' => array(2),
     'type' => MENU_LOCAL_TASK,
