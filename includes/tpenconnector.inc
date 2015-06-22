@@ -15,8 +15,9 @@ function tpenconnector_get_manifest($object_pid = '') {
     //echo $manifest->content;
     //echo rawurlencode($manifest->content);
 
-    if (TPEN::login()) {
+    $session_id = TPEN::login();
 
+    if ($session_id) {
         // first, check if a project already exists in drupal for this user/ms 
         $uri = TPENProjectContentType::check_existing_project($object_pid);
         echo $uri;
@@ -29,7 +30,7 @@ function tpenconnector_get_manifest($object_pid = '') {
         }
 
         // add /transcribe to URI for transcription interface URL
-        header("Location: " . $uri . "/transcribe");
+        header("Location: " . $uri . "/transcribe?session_id=" . $session_id);
     }else {
         echo "Error logging into T-PEN!";
     }
