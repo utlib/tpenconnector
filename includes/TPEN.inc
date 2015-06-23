@@ -1,13 +1,14 @@
 <?php
-define(TPEN_URL, "***REMOVED***");
+//define(TPEN_URL, "***REMOVED***");
+define(TPEN_URL, "[TPEN URL]");
+define(TPEN_USER, "***REMOVED***");
+define(TPEN_PASS, "3");
 
 class TPEN {
 
     public static function login() {
         $curl = curl_init();
-
         curl_setopt_array($curl, array(
-            CURLOPT_PORT => "8080",
             CURLOPT_URL => TPEN_URL . "/login",
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_ENCODING => "",
@@ -15,7 +16,7 @@ class TPEN {
             CURLOPT_TIMEOUT => 30,
             CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
             CURLOPT_CUSTOMREQUEST => "POST",
-            CURLOPT_POSTFIELDS => "uname=***REMOVED***&password=3",
+            CURLOPT_POSTFIELDS => "uname=" . TPEN_USER . "&password=" . TPEN_PASS,
         ));
 
 
@@ -35,7 +36,6 @@ class TPEN {
         $curl = curl_init();
 
         curl_setopt_array($curl, array(
-          CURLOPT_PORT => "8080",
           CURLOPT_URL => TPEN_URL . "/createProject?user=***REMOVED***",
           CURLOPT_RETURNTRANSFER => true,
           CURLOPT_ENCODING => "",
