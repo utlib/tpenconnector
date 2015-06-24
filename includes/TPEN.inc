@@ -5,9 +5,7 @@ class TPEN {
 
     public static function login() {
         $curl = curl_init();
-
         curl_setopt_array($curl, array(
-            CURLOPT_PORT => "8080",
             CURLOPT_URL => TPEN_URL . "/login",
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_ENCODING => "",
@@ -35,7 +33,6 @@ class TPEN {
         $curl = curl_init();
 
         curl_setopt_array($curl, array(
-          CURLOPT_PORT => "8080",
           CURLOPT_URL => TPEN_URL . "/createProject?user=***REMOVED***",
           CURLOPT_RETURNTRANSFER => true,
           CURLOPT_ENCODING => "",
