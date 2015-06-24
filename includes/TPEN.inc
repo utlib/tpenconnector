@@ -1,5 +1,5 @@
 <?php
-define(TPEN_URL, "***REMOVED***");
+require "TPENConnInfo.inc";
 
 class TPEN {
 
@@ -15,7 +15,7 @@ class TPEN {
             CURLOPT_TIMEOUT => 30,
             CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
             CURLOPT_CUSTOMREQUEST => "POST",
-            CURLOPT_POSTFIELDS => "uname=***REMOVED***&password=3",
+            CURLOPT_POSTFIELDS => "uname=" . TPEN_USER . "&password=" . TPEN_PASS
         ));
 
 

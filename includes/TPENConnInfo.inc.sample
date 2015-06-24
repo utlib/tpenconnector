@@ -1,0 +1,6 @@
+<?php
+
+define(TPEN_URL, "[TPEN SERVER URL]");
+define(TPEN_USER, "[TPEN USER]");
+define(TPEN_PASS, "[PASS]");
+
