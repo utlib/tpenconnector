@@ -11,6 +11,16 @@ function tpenconnector_menu() {
     'file' => 'includes/tpenconnector.inc'
   );
 
+  $items['islandora/object/%islandora_object/transcribe/delete'] = array(
+    'title' => 'Transcribe with T-PEN',
+    'page callback' => 'tpenconnector_delete',
+    'page arguments' => array(2),
+    'type' => MENU_LOCAL_TASK,
+    'access callback' => 'tpenconnector_access',
+    'access arguments' => array(2),
+    'file' => 'includes/tpenconnector.inc'
+  );
+
   $items['islandora/object/%islandora_object/transcribe'] = array(
     'title' => 'Transcribe with T-PEN',
     'page callback' => 'tpenconnector_get_manifest',
