@@ -46,7 +46,45 @@ function tpenconnector_get_manifest($object_pid = '') {
    */
 }
 
-function tpenconnector_delete($object_pid = '') {
+function tpenconnector_delete($form, &$form_state, $prefix) {
+    global $user;
+    $eq = new EntityFieldQuery();
+    $eq->entityCondition('entity_type', 'node')
+        ->entityCondition('bundle', 't_pen_projects')
+        ->propertyCondition('status', 1)
+        ->propertyCondition('uid', $user->uid)
+        ->fieldCondition('field_pid', 'value', $prefix, '=');
+
+    $result = $eq->execute();
+
+    $node = node_load(key($result['node']));
+
+    $form['title'] = array(
+      '#markup' => 'Are you sure you want to delete <em><strong>'.$node->title.'</strong></em>?'
+    );
+    $form['object_pid'] = array(
+      '#value' =>  $node->field_pid['und'][0]['value'],
+      '#type' => 'hidden'
+    );
+    $form['actions'] = array(
+      '#type' => 'actions'
+    );
+
+    $form['actions']['update'] = array(
+        '#type' => 'submit',
+        '#value' => t('Delete this T-PEN Project'),
+        '#weight' => 0,
+        '#submit' => array('_delete_project')
+    );
+
+    return $form;
+}
+
+
+
+function _delete_project($form, &$form_state) {
+    $object_pid = $form_state['values']['object_pid'];
+
     $manifest = islandora_datastream_load("SC", $object_pid);
     
     //drupal_add_http_header('Content-Type', 'application/json; utf-8');
@@ -60,7 +98,8 @@ function tpenconnector_delete($object_pid = '') {
         $uri = TPENProjectContentType::check_existing_project($object_pid);
         if ($uri) {
            TPENProjectContentType::remove_tpen_project_node($object_pid, $uri);
-           header("Location: /tpen-transciption-project");
+            $form_state['redirect'] = '/tpen-transciption-project';
+            drupal_set_message(t('T-PEN project removed successfully'));
         }
     }else {
         echo "Error logging into T-PEN!";
