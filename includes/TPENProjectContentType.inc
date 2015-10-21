@@ -45,4 +45,24 @@ class TPENProjectContentType {
 
     }
 
+    public static function remove_tpen_project_node($object_pid, $uri) {
+        global $user;
+
+        $eq = new EntityFieldQuery();
+        $eq->entityCondition('entity_type', 'node')
+            ->entityCondition('bundle', 't_pen_projects')
+            ->propertyCondition('status', 1)
+            ->propertyCondition('uid', $user->uid)
+            ->fieldCondition('field_pid', 'value', $object_pid, '=');
+
+        $result = $eq->execute();
+
+        $node = node_load(key($result['node']));
+
+        $nid_to_delete = $node->nid;
+
+        node_delete($nid_to_delete);
+
+    }
+
 }

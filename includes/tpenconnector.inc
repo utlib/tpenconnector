@@ -46,7 +46,26 @@ function tpenconnector_get_manifest($object_pid = '') {
    */
 }
 
+function tpenconnector_delete($object_pid = '') {
+    $manifest = islandora_datastream_load("SC", $object_pid);
+    
+    //drupal_add_http_header('Content-Type', 'application/json; utf-8');
+    //echo $manifest->content;
+    //echo rawurlencode($manifest->content);
 
+    $session_id = TPEN::login();
+
+    if ($session_id) {
+        // first, check if a project already exists in drupal for this user/ms 
+        $uri = TPENProjectContentType::check_existing_project($object_pid);
+        if ($uri) {
+           TPENProjectContentType::remove_tpen_project_node($object_pid, $uri);
+           header("Location: /tpen-transciption-project");
+        }
+    }else {
+        echo "Error logging into T-PEN!";
+    }
+}
 
 
 
