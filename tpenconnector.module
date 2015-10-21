@@ -34,7 +34,6 @@ function tpenconnector_menu() {
     'title' => 'Delete T-Pen project',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('tpenconnector_delete',2),
-    'type' => MENU_LOCAL_TASK,
     'access callback' => 'tpenconnector_access',
     'access arguments' => array(2),
     'file' => 'includes/tpenconnector.inc'
