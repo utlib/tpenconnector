@@ -98,6 +98,7 @@ function _delete_project($form, &$form_state) {
         $uri = TPENProjectContentType::check_existing_project($object_pid);
         if ($uri) {
            TPENProjectContentType::remove_tpen_project_node($object_pid, $uri);
+           overlay_close_dialog(NULL, array('external' => TRUE));
             $form_state['redirect'] = '/tpen-transciption-project';
             drupal_set_message(t('T-PEN project removed successfully'));
         }
