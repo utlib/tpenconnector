@@ -58,5 +58,15 @@ function tpenconnector_access($fedora_object) {
 
   $parent_obj_pid = $parent_obj[0]['object']['value'];
 
-  return in_array('islandora:bookCModel', $fedora_object->models) && ($parent_obj_pid === 'paleography:manuscripts') && user_is_logged_in();
+  $query = new EntityFieldQuery();
+
+  $query->entityCondition('entity_type', 'node')
+    ->entityCondition('bundle','master_t_pen_projects')
+    ->propertyCondition('status', 1)
+    ->fieldCondition('field_pid', 'value', $fedora_object->id, '=');
+
+
+    $results = $query->execute();
+
+  return in_array('islandora:bookCModel', $fedora_object->models) && ($parent_obj_pid === 'paleography:manuscripts') && user_is_logged_in() && count($results) > 0;
 }
