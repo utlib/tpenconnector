@@ -33,7 +33,7 @@ function tpenconnector_menu() {
 
   $items['islandora/object/%islandora_object/transcribe_master'] = array(
     'title' => 'Create Master T-PEN project',
-    'page callback' => 'tpenconnector_get_manifest',
+    'page callback' => 'tpenconnector_get_manifest_master',
     'page arguments' => array(2),
     'type' => MENU_LOCAL_TASK,
     'access callback' => 'tpenconnector_master_access',
@@ -42,11 +42,20 @@ function tpenconnector_menu() {
   );
 
 
-    $items['islandora/object/%islandora_object/delete-tpen'] = array(
+  $items['islandora/object/%islandora_object/delete-tpen'] = array(
     'title' => 'Delete T-Pen project',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('tpenconnector_delete',2),
     'access callback' => 'tpenconnector_access',
+    'access arguments' => array(2),
+    'file' => 'includes/tpenconnector.inc'
+  );
+
+  $items['islandora/object/%islandora_object/delete-master-tpen'] = array(
+    'title' => 'Delete Master T-Pen project',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('tpenconnector_master_delete',2),
+    'access callback' => 'tpenconnector_master_access',
     'access arguments' => array(2),
     'file' => 'includes/tpenconnector.inc'
   );
