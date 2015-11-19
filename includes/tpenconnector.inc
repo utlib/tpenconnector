@@ -119,6 +119,40 @@ function tpenconnector_delete($form, &$form_state, $prefix) {
     return $form;
 }
 
+function tpenconnector_master_delete($form, &$form_state, $prefix) {
+    global $user;
+    $eq = new EntityFieldQuery();
+    $eq->entityCondition('entity_type', 'node')
+        ->entityCondition('bundle', 'master_t_pen_projects')
+        ->propertyCondition('status', 1)
+        ->propertyCondition('uid', $user->uid)
+        ->fieldCondition('field_pid', 'value', $prefix, '=');
+
+    $result = $eq->execute();
+
+    $node = node_load(key($result['node']));
+
+    $form['title'] = array(
+      '#markup' => 'Are you sure you want to delete <em><strong>'.$node->title.'</strong></em>?'
+    );
+    $form['object_pid'] = array(
+      '#value' =>  $node->field_pid['und'][0]['value'],
+      '#type' => 'hidden'
+    );
+    $form['actions'] = array(
+      '#type' => 'actions'
+    );
+
+    $form['actions']['update'] = array(
+        '#type' => 'submit',
+        '#value' => t('Delete this Master T-PEN Project'),
+        '#weight' => 0,
+        '#submit' => array('_delete_project')
+    );
+
+    return $form;
+}
+
 function _delete_project($form, &$form_state) {
     $object_pid = $form_state['values']['object_pid'];
 
