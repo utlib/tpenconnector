@@ -28,7 +28,8 @@ function tpenconnector_menu() {
     'type' => MENU_LOCAL_TASK,
     'access callback' => 'tpenconnector_access',
     'access arguments' => array(2),
-    'file' => 'includes/tpenconnector.inc'
+    'file' => 'includes/tpenconnector.inc',
+    'weight' => 1
   );
 
   $items['islandora/object/%islandora_object/transcribe_master'] = array(
@@ -38,7 +39,8 @@ function tpenconnector_menu() {
     'type' => MENU_LOCAL_TASK,
     'access callback' => 'tpenconnector_master_access',
     'access arguments' => array(2),
-    'file' => 'includes/tpenconnector.inc'
+    'file' => 'includes/tpenconnector.inc',
+    'weight' => 2
   );
 
 
