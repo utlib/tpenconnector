@@ -125,7 +125,6 @@ function tpenconnector_master_delete($form, &$form_state, $prefix) {
     $eq->entityCondition('entity_type', 'node')
         ->entityCondition('bundle', 'master_t_pen_projects')
         ->propertyCondition('status', 1)
-        ->propertyCondition('uid', $user->uid)
         ->fieldCondition('field_pid', 'value', $prefix, '=');
 
     $result = $eq->execute();
