@@ -177,11 +177,9 @@ function _delete_project($form, &$form_state) {
            // delete project in TPEN first, and only proceed if successful
            if (TPEN::delete_project($project_id, $session_id) !== false) {
               TPENProjectContentType::remove_tpen_project_node($object_pid, $uri);
-              overlay_close_dialog(NULL, array('external' => TRUE));
               $form_state['redirect'] = '/tpen-transciption-project';
               drupal_set_message(t('T-PEN project removed successfully'));
            }else {
-              overlay_close_dialog(NULL, array('external' => TRUE));
               $form_state['redirect'] = '/tpen-transciption-project';
               drupal_set_message(t('Unable to remove project from T-PEN app.'), 'error');
            }
@@ -199,6 +197,7 @@ function _delete_project_master($form, &$form_state) {
     if ($session_id) {
         // first, check if a project already exists in drupal for this user/ms 
         $uri = MasterTPENProjectContentType::check_existing_project($object_pid);
+
         if ($uri) {
            // the project id is the numerical suffix of the tpen uri
            preg_match('/[0-9]*$/', $uri, $project_id_matches);
@@ -206,12 +205,10 @@ function _delete_project_master($form, &$form_state) {
            // delete project in TPEN first, and only proceed if successful
            if (TPEN::delete_project($project_id, $session_id) !== false) {
               MasterTPENProjectContentType::remove_master_tpen_project_node($object_pid, $uri);
-              overlay_close_dialog(NULL, array('external' => TRUE));
-              $form_state['redirect'] = '/tpen-transciption-project';
-              drupal_set_message(t('T-PEN project removed successfully'));
+              $form_state['redirect'] = '/master-tpen-transciption-project';
+              drupal_set_message(t('Master T-PEN project removed successfully'));
            }else {
-              overlay_close_dialog(NULL, array('external' => TRUE));
-              $form_state['redirect'] = '/tpen-transciption-project';
+              $form_state['redirect'] = '/master-tpen-transciption-project';
               drupal_set_message(t('Unable to remove project from T-PEN app.'), 'error');
            }
         }
