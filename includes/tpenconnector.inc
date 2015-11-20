@@ -197,11 +197,11 @@ function _delete_project_master($form, &$form_state) {
            if (TPEN::delete_project($project_id, $session_id) !== false) {
               MasterTPENProjectContentType::remove_master_tpen_project_node($object_pid, $uri);
               overlay_close_dialog(NULL, array('external' => TRUE));
-              $form_state['redirect'] = '/tpen-transciption-project';
-              drupal_set_message(t('T-PEN project removed successfully'));
+              $form_state['redirect'] = '/master-tpen-transciption-project';
+              drupal_set_message(t('Master T-PEN project removed successfully'));
            }else {
               overlay_close_dialog(NULL, array('external' => TRUE));
-              $form_state['redirect'] = '/tpen-transciption-project';
+              $form_state['redirect'] = '/master-tpen-transciption-project';
               drupal_set_message(t('Unable to remove project from T-PEN app.'), 'error');
            }
         }
