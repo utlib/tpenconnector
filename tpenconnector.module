@@ -106,47 +106,18 @@ function tpenconnector_master_access($fedora_object) {
   return in_array('islandora:bookCModel', $fedora_object->models) && ($parent_obj_pid === 'paleography:manuscripts') && user_is_logged_in() && in_array('administrator', $roles);
 }
 
+function tpenconnector_theme_registry_alter(&$theme_registry) {
+ $path = drupal_get_path('module', 'tpenconnector');
+  $file = 'theme.inc';
 
-function tpenconnector_preprocess_islandora_solr(&$variables) {
-  $results = $variables['results'];
-  global $user;
-  $roles = $user->roles;
-
-  foreach ($results as $key => $result) {
-    $pid = $result['PID'];
-    $ds = islandora_datastream_load("RELS-EXT", $pid);
-    if (isset($ds->content)) {
-      if (strpos($ds->content, 'info:fedora/paleography:manuscripts') && user_is_logged_in()  && in_array('administrator', $roles)) { 
-        if (__check_master_tpen__($pid)) {
-            $master_tpen_title = "Edit Master T-PEN Project";
-        } else {
-            $master_tpen_title = "Create Master T-PEN Project";
-        }
-
-        $tpen_master_url = "islandora/object/".$pid."/transcribe_master";
-        $variables['results'][$key]['master_tpen_btn'] = l($master_tpen_title, $tpen_master_url, array('html' => TRUE, 'attributes' => array('master_tpen_title' => $master_tpen_title, 'target' => '_blank', 'class' => 'tpen-link-base')));
-      }
-
-      if (strpos($ds->content, 'info:fedora/paleography:manuscripts') && user_is_logged_in() && __check_master_tpen__($pid)) { 
-        $transcribe_tpen_title = "Transcribe with T-PEN";
-        $tpen_url = "islandora/object/".$pid."/transcribe";
-        $variables['results'][$key]['transcribe_tpen_btn'] = l($transcribe_tpen_title, $tpen_url, array('html' => TRUE, 'attributes' => array('transcribe_tpen_title' => $transcribe_tpen_title, 'target' => '_blank', 'class' => 'tpen-link-base')));
-      }
-
-    }
+  if (isset($theme_registry['islandora_solr'])) {
+    $theme_registry['islandora_solr']['path'] = $path.'/theme/';
+    $theme_registry['islandora_solr']['file'] = $file;
+    $theme_registry['islandora_solr']['theme path'] = $path;
+    $theme_registry['islandora_solr']['template'] = 'islandora-solr-with-tpen';
+    $theme_registry['islandora_solr']['preprocess functions'][] = 'tpenconnector_preprocess_islandora_solr_with_tpen';
+    $theme_registry['islandora_solr']['includes'][] = $path.'/theme/'.$file;
+    $theme_registry['islandora_solr']['variables'] = array('results' => NULL,'elements' => array(),'pids' => array());
   }
-}
-
-function __check_master_tpen__($pid) {
-
-    $query = new EntityFieldQuery();
-
-    $query->entityCondition('entity_type', 'node')
-        ->entityCondition('bundle','master_t_pen_projects')
-        ->propertyCondition('status', 1)
-        ->fieldCondition('field_pid', 'value', $pid, '=');
-
-
-    $results = $query->execute();
-    return count($results) > 0;
+    
 }
