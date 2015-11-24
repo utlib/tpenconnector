@@ -98,9 +98,13 @@ function __process_display__(&$variables) {
 
     islandora_solr_metadata_query_fields($obj, $solr_fields);
 
-    dpm($solr_fields);
+    //some objects doesn't have mods_titleInfo__title_mt 
+    if (!array_key_exists('mods_titleInfo__title_mt', $solr_fields)) {
+      $title = '';
+    } else {
+      $title = $solr_fields['mods_titleInfo__title_mt']['value'][0];
+    }
 
-    $title = $solr_fields['mods_titleInfo__title_mt']['value'][0];
 
     $object_url = 'islandora/object/' . $pid;
 
