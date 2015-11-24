@@ -109,6 +109,7 @@ function tpenconnector_master_access($fedora_object) {
 function tpenconnector_theme_registry_alter(&$theme_registry) {
  $path = drupal_get_path('module', 'tpenconnector');
   $file = 'theme.inc';
+  global $theme_path;
 
   if (isset($theme_registry['islandora_solr'])) {
     $theme_registry['islandora_solr']['path'] = $path.'/theme/';
@@ -126,5 +127,18 @@ function tpenconnector_theme_registry_alter(&$theme_registry) {
     $theme_registry['islandora_basic_collection']['template'] = 'islandora-basic-collection-with-tpen';
     $theme_registry['islandora_basic_collection']['preprocess functions'][] = 'tpenconnector_preprocess_islandora_basic_collection_with_tpen';
     $theme_registry['islandora_basic_collection']['includes'][] = $path.'/theme/'.$file;
+  }
+  if (isset($theme_registry['islandora_basic_collection_grid'])) {
+    $theme_registry['islandora_basic_collection_grid']['file'] = $file;
+    $theme_registry['islandora_basic_collection_grid']['pattern'] = 'islandora_basic_collection_grid_with_tpen__';
+    $theme_registry['islandora_basic_collection_grid']['template'] = 'islandora-basic-collection-grid-with-tpen';
+    $orig_theme_path = $theme_registry['islandora_basic_collection_grid']['theme path'].'/templates';
+    if (!file_exists($theme_path.'/templates/islandora-basic-collection-grid-with-tpen.tpl.php')) {
+      $theme_registry['islandora_basic_collection_grid']['path'] = $path.'/theme';
+      $theme_registry['islandora_basic_collection_grid']['theme path'] = $path.'/theme/';
+    } 
+    $theme_registry['islandora_basic_collection_grid']['preprocess functions'][] = 'tpenconnector_preprocess_islandora_basic_collection_grid_with_tpen';
+    $theme_registry['islandora_basic_collection_grid']['includes'][] = $path.'/theme/'.$file;
+    dpm($theme_registry['islandora_basic_collection_grid']);
   }
 }
