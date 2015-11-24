@@ -1,7 +1,7 @@
 <?php
 /**
  * @file
- * Islandora solr search primary results template file.
+ * Islandora solr search primary results template file with tpen transcribe buttons
  *
  * Variables available:
  * - $results: Primary profile results array
