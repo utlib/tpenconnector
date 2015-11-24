@@ -14,13 +14,15 @@
     <dl class="islandora-basic-collection-object <?php print $value['class']; ?>">
         <dt class="islandora-basic-collection-thumb"><?php print $value['thumb_link']; ?></dt>
         <dd class="islandora-basic-collection-caption"><?php print filter_xss($value['title_link']); ?></dd>
-        <dd class="collection-value transcribe-btns">
+        <dd class="islandora-basic-collection-transcribe-btns">
+        <ul>
         <?php if (isset($value['transcribe_tpen_btn'])): ?>
-          <?php print ($value['transcribe_tpen_btn']); ?>
+          <li><?php print ($value['transcribe_tpen_btn']); ?></li>
         <?php endif; ?>
         <?php if (isset($value['master_tpen_btn'])): ?>
-          <?php print ($value['master_tpen_btn']); ?>
+          <li><?php print ($value['master_tpen_btn']); ?></li>
         <?php endif; ?>
+        </ul>
         </dd>
     </dl>
   <?php endforeach; ?>

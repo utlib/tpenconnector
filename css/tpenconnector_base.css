@@ -1,0 +1,32 @@
+/******T-pen ******/
+/* line 3, ../sass/tpenconnector_base.scss */
+.tpen-link-base, .tpen-link {
+  background: white;
+  color: #be3c2b;
+  border: 1px solid #be3c2b;
+  padding: 3px 6px;
+  text-align: center;
+  font-weight: bold;
+}
+/* line 11, ../sass/tpenconnector_base.scss */
+.tpen-link-base:hover, .tpen-link:hover {
+  background: #be3c2b;
+  color: white;
+}
+
+/* line 19, ../sass/tpenconnector_base.scss */
+.islandora-basic-collection-grid .islandora-basic-collection-transcribe-btns ul {
+  list-style-type: none;
+  padding-left: 0;
+}
+/* line 23, ../sass/tpenconnector_base.scss */
+.islandora-basic-collection-grid .islandora-basic-collection-transcribe-btns ul li a.tpen-link-base, .islandora-basic-collection-grid .islandora-basic-collection-transcribe-btns ul li a.tpen-link {
+  font-size: 80%;
+}
+
+/* line 32, ../sass/tpenconnector_base.scss */
+.tpen-link {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+}
