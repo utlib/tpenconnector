@@ -2,9 +2,9 @@
 
 /**
  * @file
- * islandora-basic-collection.tpl.php
+ * islandora-basic-collection-with-tpen.tpl.php
  *
- * @TODO: needs documentation about file and variables
+ * uses islandora-basic-collection.tpl.php as the basis, but added a logic to include transcribe tpen & master tpen project buttons
  */
 ?>
 

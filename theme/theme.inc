@@ -98,6 +98,8 @@ function __process_display__(&$variables) {
 
     islandora_solr_metadata_query_fields($obj, $solr_fields);
 
+    dpm($solr_fields);
+
     $title = $solr_fields['mods_titleInfo__title_mt']['value'][0];
 
     $object_url = 'islandora/object/' . $pid;
