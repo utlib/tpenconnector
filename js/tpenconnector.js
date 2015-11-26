@@ -8,8 +8,9 @@
 			$.ajax({
 				url: "/"+transcribe_url,
 				success: function(data) {
-					alert(data);
-					location.reload();
+					if (data === 'success'){
+						location.reload();
+					}
 				}
 			});
 

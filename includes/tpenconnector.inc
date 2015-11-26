@@ -65,7 +65,7 @@ function tpenconnector_get_manifest_master($object_pid = '') {
 
             // add uri to drupal for this user
             MasterTPENProjectContentType::add_master_tpen_project_node($object_pid, $uri);
-
+            drupal_set_message(t('Successfully created Master T-PEN Project for '.$object_pid), 'status');
             echo "success";
         } else {
 
