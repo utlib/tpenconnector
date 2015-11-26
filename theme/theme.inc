@@ -17,7 +17,7 @@ function tpenconnector_preprocess_islandora_solr_with_tpen(&$variables) {
             $variables['results'][$key]['master_tpen_btn'] = l($master_tpen_title, $tpen_master_url, array('html' => TRUE, 'attributes' => array('master_tpen_title' => $master_tpen_title, 'target' => '_blank', 'class' => 'tpen-link-base')));
         } else {
             $master_tpen_title = "Create Master T-PEN Project";
-            $variables['results'][$key]['master_tpen_btn'] = l($master_tpen_title, '', array('html' => TRUE, 'external' => TRUE,'fragment' => 'createmaster', 'attributes' => array('master_tpen_title' => $master_tpen_title, 'target' => '_blank', 'class' => 'tpen-link-base new-tpen-proj', 'id' => $tpen_master_url)));
+            $variables['results'][$key]['master_tpen_btn'] = l($master_tpen_title, '', array('html' => TRUE, 'external' => TRUE,'fragment' => 'createmaster', 'attributes' => array('master_tpen_title' => $master_tpen_title, 'class' => 'tpen-link-base new-tpen-proj', 'id' => $tpen_master_url)));
         }
       }
 
