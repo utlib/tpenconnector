@@ -83,14 +83,14 @@ function __process_display__(&$variables) {
     }
 
     if ($parent_obj_pid === 'paleography:manuscripts' && user_is_logged_in() && in_array('administrator', $roles)) {
+      $tpen_master_url = "islandora/object/".$pid."/transcribe_master"; 
       if (check_master_tpen__(($pid))) {
         $master_tpen_title = "Edit Master T-PEN project";
+        $variables['associated_objects_array'][$key]['master_tpen_btn'] = l($master_tpen_title, $tpen_master_url, array('html' => TRUE, 'attributes' => array('master_tpen_title' => $master_tpen_title, 'target' => '_blank', 'class' => 'tpen-link-base')));
       } else {
         $master_tpen_title = "Create Master T-PEN project";
+        $variables['associated_objects_array'][$key]['master_tpen_btn'] = l($master_tpen_title, '', array('html' => TRUE, 'external' => TRUE,'fragment' => 'createmaster', 'attributes' => array('master_tpen_title' => $master_tpen_title, 'class' => 'tpen-link-base new-tpen-proj', 'id' => $tpen_master_url)));
       }
-
-      $tpen_master_url = "islandora/object/".$pid."/transcribe_master"; 
-      $variables['associated_objects_array'][$key]['master_tpen_btn'] = l($master_tpen_title, $tpen_master_url, array('html' => TRUE, 'attributes' => array('master_tpen_title' => $master_tpen_title, 'target' => '_blank', 'class' => 'tpen-link-base')));
     }
   }
 }
