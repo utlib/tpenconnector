@@ -11,14 +11,14 @@ function tpenconnector_preprocess_islandora_solr_with_tpen(&$variables) {
     $ds = islandora_datastream_load("RELS-EXT", $pid);
     if (isset($ds->content)) {
       if (strpos($ds->content, 'info:fedora/paleography:manuscripts') && user_is_logged_in()  && in_array('administrator', $roles)) { 
+        $tpen_master_url = "islandora/object/".$pid."/transcribe_master";
         if (check_master_tpen__($pid)) {
             $master_tpen_title = "Edit Master T-PEN Project";
+            $variables['results'][$key]['master_tpen_btn'] = l($master_tpen_title, $tpen_master_url, array('html' => TRUE, 'attributes' => array('master_tpen_title' => $master_tpen_title, 'target' => '_blank', 'class' => 'tpen-link-base')));
         } else {
             $master_tpen_title = "Create Master T-PEN Project";
+            $variables['results'][$key]['master_tpen_btn'] = l($master_tpen_title, '', array('html' => TRUE, 'external' => TRUE,'fragment' => 'createmaster', 'attributes' => array('master_tpen_title' => $master_tpen_title, 'target' => '_blank', 'class' => 'tpen-link-base new-tpen-proj', 'id' => $tpen_master_url)));
         }
-
-        $tpen_master_url = "islandora/object/".$pid."/transcribe_master";
-        $variables['results'][$key]['master_tpen_btn'] = l($master_tpen_title, $tpen_master_url, array('html' => TRUE, 'attributes' => array('master_tpen_title' => $master_tpen_title, 'target' => '_blank', 'class' => 'tpen-link-base')));
       }
 
       if (strpos($ds->content, 'info:fedora/paleography:manuscripts') && user_is_logged_in() && check_master_tpen__($pid)) { 
