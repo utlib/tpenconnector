@@ -89,7 +89,7 @@ function __process_display__(&$variables) {
         $variables['associated_objects_array'][$key]['master_tpen_btn'] = l($master_tpen_title, $tpen_master_url, array('html' => TRUE, 'attributes' => array('master_tpen_title' => $master_tpen_title, 'target' => '_blank', 'class' => 'tpen-link-base')));
       } else {
         $master_tpen_title = "Create Master T-PEN project";
-        $variables['associated_objects_array'][$key]['master_tpen_btn'] = l($master_tpen_title, $tpen_master_url, array('html' => TRUE, 'attributes' => array('master_tpen_title' => $master_tpen_title, 'class' => 'tpen-link-base')));
+        $variables['associated_objects_array'][$key]['master_tpen_btn'] = l($master_tpen_title, '', array('html' => TRUE, 'external' => TRUE,'fragment' => 'createmaster', 'attributes' => array('master_tpen_title' => $master_tpen_title, 'class' => 'tpen-link-base new-tpen-proj', 'id' => $tpen_master_url)));
       }
     }
   }

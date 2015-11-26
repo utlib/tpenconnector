@@ -65,10 +65,13 @@ function tpenconnector_get_manifest_master($object_pid = '') {
 
             // add uri to drupal for this user
             MasterTPENProjectContentType::add_master_tpen_project_node($object_pid, $uri);
-        }
 
-        // add /transcribe to URI for transcription interface URL
-        header("Location: " . $uri . "/transcribe?session_id=" . $session_id);
+            echo "success";
+        } else {
+
+          // add /transcribe to URI for transcription interface URL
+          header("Location: " . $uri . "/transcribe?session_id=" . $session_id);
+        }
     }else {
         echo "Error logging into T-PEN!";
     }

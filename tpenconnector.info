@@ -6,3 +6,4 @@ dependencies[] = islandora_paged_content
 stylesheets[all][] = css/tpenconnector_base.css
 files[] = includes/Canvas.inc
 files[] = includes/SharedCanvasManifest.inc
+scripts[] = js/tpenconnector.js
