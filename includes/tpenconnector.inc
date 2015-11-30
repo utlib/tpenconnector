@@ -22,11 +22,21 @@ function tpenconnector_get_manifest($object_pid = '') {
         // first, check if a project already exists in drupal for this user/ms 
         $uri = TPENProjectContentType::check_existing_project($object_pid);
         if (!$uri) {
-            $uri = TPEN::create_project($manifest);
-            //$uri = "http://tpendev:8080/tpen/project/4363";
+            // copy the master project
+            $master_uri = MasterTPENProjectContentType::check_existing_project($object_pid);
 
-            // add uri to drupal for this user
-            TPENProjectContentType::add_tpen_project_node($object_pid, $uri);
+            if ($master_uri) {
+                 // the project id is the numerical suffix of the tpen uri
+                 preg_match('/[0-9]*$/', $master_uri, $project_id_matches);
+                 $project_id = $project_id_matches[0];
+             
+                 $uri = TPEN::copy_project($project_id, $session_id);
+             
+                 //$uri = "http://tpendev:8080/tpen/project/4363";
+             
+                 // add uri to drupal for this user
+                 TPENProjectContentType::add_tpen_project_node($object_pid, $uri);
+            }
         }
 
         // add /transcribe to URI for transcription interface URL
