@@ -4,10 +4,6 @@
  * This file is where non Drupal hooks code live
  */
 
-require "TPEN.inc";
-require "TPENProjectContentType.inc";
-require "MasterTPENProjectContentType.inc";
-
 function tpenconnector_get_manifest($object_pid = '') {
     
     $manifest = islandora_datastream_load("SC", $object_pid);
@@ -20,6 +16,7 @@ function tpenconnector_get_manifest($object_pid = '') {
 
     if ($session_id) {
         // first, check if a project already exists in drupal for this user/ms 
+
         $uri = TPENProjectContentType::check_existing_project($object_pid);
         if (!$uri) {
             // copy the master project
@@ -44,20 +41,10 @@ function tpenconnector_get_manifest($object_pid = '') {
     }else {
         echo "Error logging into T-PEN!";
     }
-   
-   
-   /*
-   $ch = curl_init();
-   curl_setopt($ch, CURLOPT_URL, TPEN_URL . "/createProject");
-   curl_setopt($ch, CURLOPT_POST, 1);
-   curl_setopt($ch, CURLOPT_POSTFIELDS, $manifest->content);
-   curl_exec($ch);
-   curl_close($ch);   
-   */
 }
 
-function tpenconnector_get_manifest_master($object_pid = '') {
-    
+function tpenconnector_get_manifest_master($object_pid = '', $from_menutab = FALSE) {
+
     $manifest = islandora_datastream_load("SC", $object_pid);
     
     //drupal_add_http_header('Content-Type', 'application/json; utf-8');
@@ -69,18 +56,29 @@ function tpenconnector_get_manifest_master($object_pid = '') {
     if ($session_id) {
         // first, check if a project already exists in drupal for this user/ms 
         $uri = MasterTPENProjectContentType::check_existing_project($object_pid);
-        if (!$uri) {
-            $uri = TPEN::create_project($manifest);
-            //$uri = "http://tpendev:8080/tpen/project/4363";
+        if (!$from_menutab) {
+          if (!$uri) {
+              $uri = TPEN::create_project($manifest);
+              //$uri = "http://tpendev:8080/tpen/project/4363";
 
-            // add uri to drupal for this user
-            MasterTPENProjectContentType::add_master_tpen_project_node($object_pid, $uri);
-            drupal_set_message(t('Successfully created Master T-PEN Project for '.$object_pid), 'status');
-            echo "success";
+              // add uri to drupal for this user
+              MasterTPENProjectContentType::add_master_tpen_project_node($object_pid, $uri);
+              drupal_set_message(t('Successfully created Master T-PEN Project for '.$object_pid), 'status');
+              echo "success";
+          } else {
+
+            // add /transcribe to URI for transcription interface URL
+            header("Location: " . $uri . "/transcribe?session_id=" . $session_id);
+          }
         } else {
+          //it's being called from the menu tab at book page
 
-          // add /transcribe to URI for transcription interface URL
-          header("Location: " . $uri . "/transcribe?session_id=" . $session_id);
+          if (!$uri) {
+            $uri = TPEN::create_project($manifest);
+            MasterTPENProjectContentType::add_master_tpen_project_node($object_pid, $uri);
+          }
+          $url = $uri . "/transcribe?session_id=" . $session_id;
+          drupal_goto($url, array('external' => TRUE));
         }
     }else {
         echo "Error logging into T-PEN!";
