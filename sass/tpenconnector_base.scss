@@ -1,0 +1,39 @@
+/******T-pen ******/
+
+.tpen-link-base {
+	background:white;
+	color:#be3c2b;
+	border:1px solid #be3c2b;
+	padding:3px 6px;
+	text-align:center;
+	font-weight:bold;	
+
+	&:hover {
+		background:#be3c2b;
+		color:white;
+	}
+}
+
+.islandora-basic-collection-grid {
+	.islandora-basic-collection-transcribe-btns {
+		ul {
+			list-style-type: none;
+			padding-left: 0;
+			li {
+				a.tpen-link-base {
+					font-size: 80%;
+				}
+			}
+		}
+	}
+}
+
+
+.tpen-link {
+	@extend .tpen-link-base;
+	position:absolute;
+	bottom:10px;
+	right:10px;
+	
+}
+

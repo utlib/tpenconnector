@@ -28,13 +28,62 @@ function tpenconnector_menu() {
     'type' => MENU_LOCAL_TASK,
     'access callback' => 'tpenconnector_access',
     'access arguments' => array(2),
-    'file' => 'includes/tpenconnector.inc'
+    'file' => 'includes/tpenconnector.inc',
+    'weight' => 1
   );
-    $items['islandora/object/%islandora_object/delete-tpen'] = array(
+
+
+  //master tpenconnector button at islandora collection page
+ $items['islandora/object/%islandora_object/transcribe_master'] = array(
+    'title' => 'Create Master T-PEN project',
+    'page callback' => 'tpenconnector_get_manifest_master',
+    'page arguments' => array(2),
+    'type' => MENU_CALLBACK,
+    'access callback' => 'tpenconnector_master_access',
+    'access arguments' => array(2),
+    'file' => 'includes/tpenconnector.inc',
+    'weight' => 2
+  );
+
+ //master tpenconnector button at menu tabs
+  $items['islandora/object/%islandora_object/transcribe_master_create/from_menutab'] = array(
+    'title' => 'Create Master T-PEN project',
+    'page callback' => 'tpenconnector_get_manifest_master',
+    'page arguments' => array(2,4),
+    'type' => MENU_LOCAL_TASK,
+    'access callback' => 'tpenconnector_master_create',
+    'access arguments' => array(2),
+    'file' => 'includes/tpenconnector.inc',
+    'weight' => 2
+  );
+
+ //master tpenconnector button at menu tabs
+  $items['islandora/object/%islandora_object/transcribe_master_edit/from_menutab'] = array(
+    'title' => 'Edit Master T-PEN project',
+    'page callback' => 'tpenconnector_get_manifest_master',
+    'page arguments' => array(2,4),
+    'type' => MENU_LOCAL_TASK,
+    'access callback' => 'tpenconnector_master_edit',
+    'access arguments' => array(2),
+    'file' => 'includes/tpenconnector.inc',
+    'weight' => 2
+  );
+
+
+  $items['islandora/object/%islandora_object/delete-tpen'] = array(
     'title' => 'Delete T-Pen project',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('tpenconnector_delete',2),
     'access callback' => 'tpenconnector_access',
+    'access arguments' => array(2),
+    'file' => 'includes/tpenconnector.inc'
+  );
+
+  $items['islandora/object/%islandora_object/delete-master-tpen'] = array(
+    'title' => 'Delete Master T-Pen project',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('tpenconnector_master_delete',2),
+    'access callback' => 'tpenconnector_master_access',
     'access arguments' => array(2),
     'file' => 'includes/tpenconnector.inc'
   );
@@ -58,5 +107,102 @@ function tpenconnector_access($fedora_object) {
 
   $parent_obj_pid = $parent_obj[0]['object']['value'];
 
-  return in_array('islandora:bookCModel', $fedora_object->models) && ($parent_obj_pid === 'paleography:manuscripts') && user_is_logged_in();
+  $query = new EntityFieldQuery();
+
+  $query->entityCondition('entity_type', 'node')
+    ->entityCondition('bundle','master_t_pen_projects')
+    ->propertyCondition('status', 1)
+    ->fieldCondition('field_pid', 'value', $fedora_object->id, '=');
+
+
+    $results = $query->execute();
+
+  return in_array('islandora:bookCModel', $fedora_object->models) && ($parent_obj_pid === 'paleography:manuscripts') && user_is_logged_in() && count($results) > 0;
+}
+
+function tpenconnector_master_create($fedora_object) {
+
+  require_once "includes/MasterTPENProjectContentType.inc";
+
+  global $user;
+
+  $roles = $user->roles;
+  
+  $parent_obj = $fedora_object->relationships->get('info:fedora/fedora-system:def/relations-external#', 'isMemberOfCollection');
+
+  $parent_obj_pid = $parent_obj[0]['object']['value'];
+
+  $uri = MasterTPENProjectContentType::check_existing_project($fedora_object->id);
+
+  return in_array('islandora:bookCModel', $fedora_object->models) && ($parent_obj_pid === 'paleography:manuscripts') && user_is_logged_in() && in_array('administrator', $roles) && !$uri;
+}
+
+function tpenconnector_master_edit($fedora_object) {
+
+  require_once "includes/MasterTPENProjectContentType.inc";
+
+  global $user;
+
+  $roles = $user->roles;
+
+  $parent_obj = $fedora_object->relationships->get('info:fedora/fedora-system:def/relations-external#', 'isMemberOfCollection');
+
+  $parent_obj_pid = $parent_obj[0]['object']['value'];
+
+  $uri = MasterTPENProjectContentType::check_existing_project($fedora_object->id);
+
+  return in_array('islandora:bookCModel', $fedora_object->models) && ($parent_obj_pid === 'paleography:manuscripts') && user_is_logged_in() && in_array('administrator', $roles) && $uri;
+}
+
+function tpenconnector_master_access($fedora_object) {
+  global $user;
+
+  $roles = $user->roles;
+  
+  $parent_obj = $fedora_object->relationships->get('info:fedora/fedora-system:def/relations-external#', 'isMemberOfCollection');
+
+  $parent_obj_pid = $parent_obj[0]['object']['value'];
+
+  return in_array('islandora:bookCModel', $fedora_object->models) && ($parent_obj_pid === 'paleography:manuscripts') && user_is_logged_in() && in_array('administrator', $roles);
+}
+
+function tpenconnector_theme_registry_alter(&$theme_registry) {
+ $path = drupal_get_path('module', 'tpenconnector');
+  $file = 'theme.inc';
+  global $theme_path;
+
+  if (isset($theme_registry['islandora_solr'])) {
+    $theme_registry['islandora_solr']['file'] = $file;
+    $theme_registry['islandora_solr']['template'] = 'islandora-solr-with-tpen';
+    if (!file_exists($theme_path.'/templates/islandora-solr-with-tpen.tpl.php')) {
+      $theme_registry['islandora_solr']['path'] = $path.'/theme';
+      $theme_registry['islandora_solr']['theme path'] = $path.'/theme/';
+     }
+    $theme_registry['islandora_solr']['preprocess functions'][] = 'tpenconnector_preprocess_islandora_solr_with_tpen';
+    $theme_registry['islandora_solr']['includes'][] = $path.'/theme/'.$file;
+    $theme_registry['islandora_solr']['variables'] = array('results' => NULL,'elements' => array(),'pids' => array());
+  }
+    
+  if (isset($theme_registry['islandora_basic_collection'])) {
+    $theme_registry['islandora_basic_collection']['file'] = $file;
+    $theme_registry['islandora_basic_collection']['pattern'] = 'islandora_basic_collection_with_tpen__';
+    $theme_registry['islandora_basic_collection']['template'] = 'islandora-basic-collection-with-tpen';
+    if (!file_exists($theme_path.'/templates/islandora-basic-collection-with-tpen.tpl.php')) {
+      $theme_registry['islandora_basic_collection_grid']['path'] = $path.'/theme';
+      $theme_registry['islandora_basic_collection_grid']['theme path'] = $path.'/theme/';
+     }
+    $theme_registry['islandora_basic_collection']['preprocess functions'][] = 'tpenconnector_preprocess_islandora_basic_collection_with_tpen';
+    $theme_registry['islandora_basic_collection']['includes'][] = $path.'/theme/'.$file;
+  }
+  if (isset($theme_registry['islandora_basic_collection_grid'])) {
+    $theme_registry['islandora_basic_collection_grid']['file'] = $file;
+    $theme_registry['islandora_basic_collection_grid']['pattern'] = 'islandora_basic_collection_grid_with_tpen__';
+    $theme_registry['islandora_basic_collection_grid']['template'] = 'islandora-basic-collection-grid-with-tpen';
+    if (!file_exists($theme_path.'/templates/islandora-basic-collection-grid-with-tpen.tpl.php')) {
+      $theme_registry['islandora_basic_collection_grid']['path'] = $path.'/theme';
+      $theme_registry['islandora_basic_collection_grid']['theme path'] = $path.'/theme/';
+    } 
+    $theme_registry['islandora_basic_collection_grid']['preprocess functions'][] = 'tpenconnector_preprocess_islandora_basic_collection_grid_with_tpen';
+    $theme_registry['islandora_basic_collection_grid']['includes'][] = $path.'/theme/'.$file;
+  }
 }
