@@ -32,12 +32,38 @@ function tpenconnector_menu() {
     'weight' => 1
   );
 
-  $items['islandora/object/%islandora_object/transcribe_master'] = array(
+
+  //master tpenconnector button at islandora collection page
+ $items['islandora/object/%islandora_object/transcribe_master'] = array(
     'title' => 'Create Master T-PEN project',
     'page callback' => 'tpenconnector_get_manifest_master',
     'page arguments' => array(2),
-    'type' => MENU_LOCAL_TASK,
+    'type' => MENU_CALLBACK,
     'access callback' => 'tpenconnector_master_access',
+    'access arguments' => array(2),
+    'file' => 'includes/tpenconnector.inc',
+    'weight' => 2
+  );
+
+ //master tpenconnector button at menu tabs
+  $items['islandora/object/%islandora_object/transcribe_master_create/from_menutab'] = array(
+    'title' => 'Create Master T-PEN project',
+    'page callback' => 'tpenconnector_get_manifest_master',
+    'page arguments' => array(2,4),
+    'type' => MENU_LOCAL_TASK,
+    'access callback' => 'tpenconnector_master_create',
+    'access arguments' => array(2),
+    'file' => 'includes/tpenconnector.inc',
+    'weight' => 2
+  );
+
+ //master tpenconnector button at menu tabs
+  $items['islandora/object/%islandora_object/transcribe_master_edit/from_menutab'] = array(
+    'title' => 'Edit Master T-PEN project',
+    'page callback' => 'tpenconnector_get_manifest_master',
+    'page arguments' => array(2,4),
+    'type' => MENU_LOCAL_TASK,
+    'access callback' => 'tpenconnector_master_edit',
     'access arguments' => array(2),
     'file' => 'includes/tpenconnector.inc',
     'weight' => 2
@@ -92,6 +118,40 @@ function tpenconnector_access($fedora_object) {
     $results = $query->execute();
 
   return in_array('islandora:bookCModel', $fedora_object->models) && ($parent_obj_pid === 'paleography:manuscripts') && user_is_logged_in() && count($results) > 0;
+}
+
+function tpenconnector_master_create($fedora_object) {
+
+  require_once "includes/MasterTPENProjectContentType.inc";
+
+  global $user;
+
+  $roles = $user->roles;
+  
+  $parent_obj = $fedora_object->relationships->get('info:fedora/fedora-system:def/relations-external#', 'isMemberOfCollection');
+
+  $parent_obj_pid = $parent_obj[0]['object']['value'];
+
+  $uri = MasterTPENProjectContentType::check_existing_project($fedora_object->id);
+
+  return in_array('islandora:bookCModel', $fedora_object->models) && ($parent_obj_pid === 'paleography:manuscripts') && user_is_logged_in() && in_array('administrator', $roles) && !$uri;
+}
+
+function tpenconnector_master_edit($fedora_object) {
+
+  require_once "includes/MasterTPENProjectContentType.inc";
+
+  global $user;
+
+  $roles = $user->roles;
+
+  $parent_obj = $fedora_object->relationships->get('info:fedora/fedora-system:def/relations-external#', 'isMemberOfCollection');
+
+  $parent_obj_pid = $parent_obj[0]['object']['value'];
+
+  $uri = MasterTPENProjectContentType::check_existing_project($fedora_object->id);
+
+  return in_array('islandora:bookCModel', $fedora_object->models) && ($parent_obj_pid === 'paleography:manuscripts') && user_is_logged_in() && in_array('administrator', $roles) && $uri;
 }
 
 function tpenconnector_master_access($fedora_object) {
