@@ -178,10 +178,10 @@ function _delete_project($form, &$form_state) {
            // delete project in TPEN first, and only proceed if successful
            if (TPEN::delete_project($project_id, $session_id) !== false) {
               TPENProjectContentType::remove_tpen_project_node($object_pid, $uri);
-              $form_state['redirect'] = '/tpen-transciption-project';
+              $form_state['redirect'] = '/my-transcriptions';
               drupal_set_message(t('T-PEN project removed successfully'));
            }else {
-              $form_state['redirect'] = '/tpen-transciption-project';
+              $form_state['redirect'] = '/my-transcriptions';
               drupal_set_message(t('Unable to remove project from T-PEN app.'), 'error');
            }
         }
@@ -206,10 +206,10 @@ function _delete_project_master($form, &$form_state) {
            // delete project in TPEN first, and only proceed if successful
            if (TPEN::delete_project($project_id, $session_id) !== false) {
               MasterTPENProjectContentType::remove_master_tpen_project_node($object_pid, $uri);
-              $form_state['redirect'] = '/master-tpen-transciption-project';
+              $form_state['redirect'] = '/master-transcriptions';
               drupal_set_message(t('Master T-PEN project removed successfully'));
            }else {
-              $form_state['redirect'] = '/master-tpen-transciption-project';
+              $form_state['redirect'] = '/master-transcriptions';
               drupal_set_message(t('Unable to remove project from T-PEN app.'), 'error');
            }
         }
