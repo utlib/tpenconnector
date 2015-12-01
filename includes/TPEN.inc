@@ -60,7 +60,6 @@ class TPEN {
         $curl = curl_init();
 
         curl_setopt_array($curl, array(
-          CURLOPT_PORT => "8080",
           CURLOPT_URL => TPEN_URL . "/copyProject?projectID=". $project_id . "&session_id=". $session_id,
           CURLOPT_RETURNTRANSFER => true,
           CURLOPT_ENCODING => "",
@@ -87,7 +86,6 @@ class TPEN {
         $curl = curl_init();
 
         curl_setopt_array($curl, array(
-          CURLOPT_PORT => "8080",
           CURLOPT_URL => TPEN_URL . "/delProject?projectID=". $project_id . "&session_id=" . $session_id,
           CURLOPT_RETURNTRANSFER => true,
           CURLOPT_ENCODING => "",
