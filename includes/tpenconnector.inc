@@ -5,12 +5,6 @@
  */
 
 function tpenconnector_get_manifest($object_pid = '') {
-    
-    $manifest = islandora_datastream_load("SC", $object_pid);
-    
-    //drupal_add_http_header('Content-Type', 'application/json; utf-8');
-    //echo $manifest->content;
-    //echo rawurlencode($manifest->content);
 
     $session_id = TPEN::login();
 
@@ -44,13 +38,7 @@ function tpenconnector_get_manifest($object_pid = '') {
 }
 
 function tpenconnector_get_manifest_master($object_pid = '', $from_menutab = FALSE) {
-
-    $manifest = islandora_datastream_load("SC", $object_pid);
     
-    //drupal_add_http_header('Content-Type', 'application/json; utf-8');
-    //echo $manifest->content;
-    //echo rawurlencode($manifest->content);
-
     $session_id = TPEN::login();
 
     if ($session_id) {
@@ -58,6 +46,7 @@ function tpenconnector_get_manifest_master($object_pid = '', $from_menutab = FAL
         $uri = MasterTPENProjectContentType::check_existing_project($object_pid);
         if (!$from_menutab) {
           if (!$uri) {
+              $manifest = islandora_datastream_load("SC", $object_pid);
               $uri = TPEN::create_project($manifest);
               //$uri = "http://tpendev:8080/tpen/project/4363";
 
@@ -74,6 +63,7 @@ function tpenconnector_get_manifest_master($object_pid = '', $from_menutab = FAL
           //it's being called from the menu tab at book page
 
           if (!$uri) {
+            $manifest = islandora_datastream_load("SC", $object_pid);
             $uri = TPEN::create_project($manifest);
             MasterTPENProjectContentType::add_master_tpen_project_node($object_pid, $uri);
           }
@@ -83,16 +73,7 @@ function tpenconnector_get_manifest_master($object_pid = '', $from_menutab = FAL
     }else {
         echo "Error logging into T-PEN!";
     }
-   
-   
-   /*
-   $ch = curl_init();
-   curl_setopt($ch, CURLOPT_URL, TPEN_URL . "/createProject");
-   curl_setopt($ch, CURLOPT_POST, 1);
-   curl_setopt($ch, CURLOPT_POSTFIELDS, $manifest->content);
-   curl_exec($ch);
-   curl_close($ch);   
-   */
+  
 }
 
 
