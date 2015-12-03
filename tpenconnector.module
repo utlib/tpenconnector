@@ -3,6 +3,7 @@
  * hook_menu
  */
 function tpenconnector_menu() {
+
   $items['tpenconnector/get_manifest'] = array(
     'title' => 'SharedCanvas manifest',
     'page callback' => 'tpenconnector_get_manifest',
@@ -134,7 +135,7 @@ function tpenconnector_master_create($fedora_object) {
 
   $uri = MasterTPENProjectContentType::check_existing_project($fedora_object->id);
 
-  return in_array('islandora:bookCModel', $fedora_object->models) && ($parent_obj_pid === 'paleography:manuscripts') && user_is_logged_in() && in_array('administrator', $roles) && !$uri;
+  return in_array('islandora:bookCModel', $fedora_object->models) && ($parent_obj_pid === 'paleography:manuscripts') && user_is_logged_in() && (in_array('administrator', $roles) || in_array('paleography_admin', $roles)) && !$uri;
 }
 
 function tpenconnector_master_edit($fedora_object) {
@@ -151,7 +152,7 @@ function tpenconnector_master_edit($fedora_object) {
 
   $uri = MasterTPENProjectContentType::check_existing_project($fedora_object->id);
 
-  return in_array('islandora:bookCModel', $fedora_object->models) && ($parent_obj_pid === 'paleography:manuscripts') && user_is_logged_in() && in_array('administrator', $roles) && $uri;
+  return in_array('islandora:bookCModel', $fedora_object->models) && ($parent_obj_pid === 'paleography:manuscripts') && user_is_logged_in() && (in_array('administrator', $roles) || in_array('paleography_admin', $roles))  && $uri;
 }
 
 function tpenconnector_master_access($fedora_object) {
@@ -163,7 +164,7 @@ function tpenconnector_master_access($fedora_object) {
 
   $parent_obj_pid = $parent_obj[0]['object']['value'];
 
-  return in_array('islandora:bookCModel', $fedora_object->models) && ($parent_obj_pid === 'paleography:manuscripts') && user_is_logged_in() && in_array('administrator', $roles);
+  return in_array('islandora:bookCModel', $fedora_object->models) && ($parent_obj_pid === 'paleography:manuscripts') && user_is_logged_in() && (in_array('administrator', $roles) || in_array('paleography_admin', $roles)) ;
 }
 
 function tpenconnector_theme_registry_alter(&$theme_registry) {
