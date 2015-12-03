@@ -10,7 +10,7 @@ function tpenconnector_preprocess_islandora_solr_with_tpen(&$variables) {
     $pid = $result['PID'];
     $ds = islandora_datastream_load("RELS-EXT", $pid);
     if (isset($ds->content)) {
-      if (strpos($ds->content, 'info:fedora/paleography:manuscripts') && user_is_logged_in()  && in_array('administrator', $roles)) { 
+      if (strpos($ds->content, 'info:fedora/paleography:manuscripts') && user_is_logged_in()  && (in_array('administrator', $roles) || in_array('paleography_admin', $roles))) { 
         $tpen_master_url = "islandora/object/".$pid."/transcribe_master";
         if (check_master_tpen__($pid)) {
             $master_tpen_title = "Edit Master T-PEN Project";
@@ -82,7 +82,7 @@ function __process_display__(&$variables) {
       $variables['associated_objects_array'][$key]['transcribe_tpen_btn'] = l($transcribe_tpen_title, $tpen_url, array('html' => TRUE, 'attributes' => array('transcribe_tpen_title' => $transcribe_tpen_title, 'target' => '_blank', 'class' => 'tpen-link-base')));
     }
 
-    if ($parent_obj_pid === 'paleography:manuscripts' && user_is_logged_in() && in_array('administrator', $roles)) {
+    if ($parent_obj_pid === 'paleography:manuscripts' && user_is_logged_in() && (in_array('administrator', $roles) || in_array('paleography_admin', $roles))) {
       $tpen_master_url = "islandora/object/".$pid."/transcribe_master"; 
       if (check_master_tpen__(($pid))) {
         $master_tpen_title = "Edit Master T-PEN project";
