@@ -200,5 +200,46 @@ function _delete_project_master($form, &$form_state) {
 }
 
 
+function tpenconnector_share($form, &$form_state, $prefix) {
+
+    global $user;
+    $eq = new EntityFieldQuery();
+    $eq->entityCondition('entity_type', 'node')
+        ->entityCondition('bundle', 't_pen_projects')
+        ->propertyCondition('status', 1)
+        ->propertyCondition('uid', $user->uid)
+        ->fieldCondition('field_pid', 'value', $prefix, '=');
+
+    $result = $eq->execute();
+
+    $node = node_load(key($result['node']));
+
+    $object_pid = $node->field_pid['und'][0]['value'];
+
+    $session_id = TPEN::login();
+
+    if ($session_id) {
+
+        // first, check if a project already exists in drupal for this user/ms
+        $uri = TPENProjectContentType::check_existing_project($object_pid);
 
 
+        if ($uri) {
+            // the project id is the numerical suffix of the tpen uri
+            preg_match('/[0-9]*$/', $uri, $project_id_matches);
+            $project_id = $project_id_matches[0];
+
+            if(!empty($project_id)) {
+                $url = TPEN_URL . "/project.html?projectID=" .$project_id;
+                drupal_goto($url, array('external' => TRUE));
+            }else {
+                $form_state['redirect'] = '/my-transcriptions';
+                drupal_set_message(t('Unable to share project from T-PEN app.'), 'error');
+            }
+
+        }
+    }else {
+        echo "Error logging into T-PEN!";
+    }
+
+}

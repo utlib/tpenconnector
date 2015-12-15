@@ -77,6 +77,16 @@ function tpenconnector_menu() {
     'file' => 'includes/tpenconnector.inc'
   );
 
+ //share button in my projects page
+ $items['islandora/object/%islandora_object/share'] = array(
+    'title' => 'Share T-Pen project',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('tpenconnector_share',2),
+    'access callback' => 'tpenconnector_access',
+    'access arguments' => array(2),
+    'file' => 'includes/tpenconnector.inc'
+  );
+
  //T-PEN SSO settings menu
  $items['admin/config/system/tpenconnector'] = array(
         'title' => 'Tpenconnector redirect settings',
@@ -244,8 +254,10 @@ function tpenconnector_theme_registry_alter(&$theme_registry) {
 function tpenconnector_encrypt($str, $isBinary = false)
 {
 
-    $iv = variable_get('tpenconnector_sso_iv'); #Same as in T-PEN JAVA code
-    $key = variable_get('tpenconnector_sso_key'); #Same as in T-PEN JAVA code
+//    $iv = variable_get('tpenconnector_sso_iv'); #Same as in T-PEN JAVA code
+//    $key = variable_get('tpenconnector_sso_key'); #Same as in T-PEN JAVA code
+    $iv = '***REMOVED***'; #Same as in JAVA
+    $key = '***REMOVED***'; #Same as in JAVA
 
     $str = $isBinary ? $str : utf8_decode($str);
     $td = mcrypt_module_open('rijndael-128', ' ', 'cbc', $iv);
