@@ -254,10 +254,8 @@ function tpenconnector_theme_registry_alter(&$theme_registry) {
 function tpenconnector_encrypt($str, $isBinary = false)
 {
 
-//    $iv = variable_get('tpenconnector_sso_iv'); #Same as in T-PEN JAVA code
-//    $key = variable_get('tpenconnector_sso_key'); #Same as in T-PEN JAVA code
-    $iv = '***REMOVED***'; #Same as in JAVA
-    $key = '***REMOVED***'; #Same as in JAVA
+    $iv = variable_get('tpenconnector_sso_iv'); #Same as in T-PEN JAVA code
+    $key = variable_get('tpenconnector_sso_key'); #Same as in T-PEN JAVA code
 
     $str = $isBinary ? $str : utf8_decode($str);
     $td = mcrypt_module_open('rijndael-128', ' ', 'cbc', $iv);
