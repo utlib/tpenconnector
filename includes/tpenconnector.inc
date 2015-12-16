@@ -37,6 +37,7 @@ function tpenconnector_get_manifest($object_pid = '') {
     }
 }
 
+
 function tpenconnector_get_manifest_master($object_pid = '', $from_menutab = FALSE) {
     
     $session_id = TPEN::login();
@@ -242,4 +243,18 @@ function tpenconnector_share($form, &$form_state, $prefix) {
         echo "Error logging into T-PEN!";
     }
 
+}
+
+function tpenconnector_edit_shared_project($project_id) {
+
+    $session_id = TPEN::login();
+
+    if ($session_id) {
+
+        $url = TPEN_URL . "/newberryTrans.html?projectID=" .$project_id;
+        drupal_goto($url, array('external' => TRUE));
+
+    }else {
+        echo "Error logging into T-PEN!";
+    }
 }

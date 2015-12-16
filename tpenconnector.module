@@ -87,6 +87,16 @@ function tpenconnector_menu() {
     'file' => 'includes/tpenconnector.inc'
   );
 
+ //Edit button in shared with me page
+ $items['tpen/sharedproject/%/edit'] = array(
+    'title' => 'Edit shared T-Pen project',
+    'page callback' => 'tpenconnector_edit_shared_project',
+    'page arguments' => array(2),
+    'file' => 'includes/tpenconnector.inc',
+    'access arguments' => array('tpenconnector redirect user'),
+ );
+
+
  //T-PEN SSO settings menu
  $items['admin/config/system/tpenconnector'] = array(
         'title' => 'Tpenconnector redirect settings',
@@ -114,8 +124,8 @@ function tpenconnector_permission() {
             'description' => t('Define as admin user for T-PEN.'),
         ),
         'tpenconnector redirect user' => array(
-            'title' => t('Redirect user after logout'),
-            'description' => t('Redirect user after logout.'),
+            'title' => t('T-PEN user'),
+            'description' => t('T-PEN user.'),
         ),
     );
 }
