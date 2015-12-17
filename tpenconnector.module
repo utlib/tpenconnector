@@ -93,9 +93,8 @@ function tpenconnector_menu() {
     'page callback' => 'tpenconnector_edit_shared_project',
     'page arguments' => array(2),
     'file' => 'includes/tpenconnector.inc',
-    'access arguments' => array('tpenconnector redirect user'),
+    'access arguments' => array('access content'),
  );
-
 
  //T-PEN SSO settings menu
  $items['admin/config/system/tpenconnector'] = array(
@@ -122,10 +121,6 @@ function tpenconnector_permission() {
         'tpenconnector tpen administer' => array(
             'title' => t('T-PEN admin user'),
             'description' => t('Define as admin user for T-PEN.'),
-        ),
-        'tpenconnector redirect user' => array(
-            'title' => t('T-PEN user'),
-            'description' => t('T-PEN user.'),
         ),
     );
 }
@@ -325,7 +320,8 @@ function tpenconnector_user_login($account) {
  * Implements hook_user_logout().
  */
 function tpenconnector_user_logout($account) {
-    if (user_access('tpenconnector redirect user') && (variable_get('tpenconnector_redirect')==1)) {
+    //if ((variable_get('tpenconnector_redirect')==1) && user_access('tpenconnector redirect user')) {
+    if ((variable_get('tpenconnector_redirect')==1)) {
         $destination = &drupal_static(__FUNCTION__);
         $destination = token_replace(variable_get('tpenconnector_destination_logout', ''));
     }
@@ -375,6 +371,10 @@ function tpenconnector_page_build(&$page) {
  * Settings form.
  */
 function tpenconnector_settings_form() {
+
+    require_once 'includes/TPENSSOInfo.inc';
+    tpenconnector_sso_config();
+
     $form = array();
 
     $form['tpenconnector_redirect'] = array(

@@ -5,6 +5,16 @@
  * Tpenconnector - module file
  */
 
+/**
+ * Implement hook_install().
+ *
+ * Perform actions to set up the site for this profile.
+ */
+function tpenconnector_install() {
+    require_once 'includes/TPENSSOInfo.inc';
+    tpenconnector_sso_config();
+}
+
 
 /**
  * Implements hook_uninstall().
@@ -25,7 +35,7 @@ function tpenconnector_update_7000(&$sandbox) {
         ->execute()
         ->fetchCol();
     foreach ($vars as $var_name) {
-        if ($var_name != 'tpenconnector_destination_logout' && $var_name != 'tpenconnector_message') {
+        if ($var_name != 'tpenconnector_destination_logout') {
             variable_del($var_name);
         }
     }
