@@ -47,7 +47,7 @@ function tpenconnector_get_manifest_master($object_pid = '', $from_menutab = FAL
         if (!$from_menutab) {
           if (!$uri) {
               $manifest = islandora_datastream_load("SC", $object_pid);
-              $uri = TPEN::create_project($manifest, $user->name);
+              $uri = TPEN::create_project($manifest, $object_pid, $user->name);
               //$uri = "http://tpendev:8080/tpen/project/4363";
 
               // add uri to drupal for this user
@@ -64,7 +64,7 @@ function tpenconnector_get_manifest_master($object_pid = '', $from_menutab = FAL
 
           if (!$uri) {
             $manifest = islandora_datastream_load("SC", $object_pid);
-            $uri = TPEN::create_project($manifest, $user->name);
+            $uri = TPEN::create_project($manifest, $object_pid, $user->name);
             MasterTPENProjectContentType::add_master_tpen_project_node($object_pid, $uri);
           }
           $url = $uri . "/transcribe?session_id=" . $session_id;

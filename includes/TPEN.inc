@@ -29,11 +29,11 @@ class TPEN {
         }
     }
 
-    public static function create_project($manifest, $user) {
+    public static function create_project($manifest, $title, $user) {
         $curl = curl_init();
 
         curl_setopt_array($curl, array(
-          CURLOPT_URL => TPEN_URL . "/createProject?user=" . $user,
+          CURLOPT_URL => TPEN_URL . "/createProject?title=" . $title . "&user=" . $user,
           CURLOPT_RETURNTRANSFER => true,
           CURLOPT_ENCODING => "",
           CURLOPT_MAXREDIRS => 10,
