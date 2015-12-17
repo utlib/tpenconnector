@@ -29,11 +29,11 @@ class TPEN {
         }
     }
 
-    public static function create_project($manifest) {
+    public static function create_project($manifest, $user) {
         $curl = curl_init();
 
         curl_setopt_array($curl, array(
-          CURLOPT_URL => TPEN_URL . "/createProject?user=***REMOVED***",
+          CURLOPT_URL => TPEN_URL . "/createProject?user=" . $user,
           CURLOPT_RETURNTRANSFER => true,
           CURLOPT_ENCODING => "",
           CURLOPT_MAXREDIRS => 10,
@@ -56,11 +56,11 @@ class TPEN {
         }
     }
 
-    public static function copy_project($project_id, $session_id) {
+    public static function copy_project($project_id, $user) {
         $curl = curl_init();
 
         curl_setopt_array($curl, array(
-          CURLOPT_URL => TPEN_URL . "/copyProject?projectID=". $project_id . "&session_id=". $session_id,
+          CURLOPT_URL => TPEN_URL . "/copyProject?projectID=". $project_id . "&user=" . $user,
           CURLOPT_RETURNTRANSFER => true,
           CURLOPT_ENCODING => "",
           CURLOPT_MAXREDIRS => 10,
@@ -82,11 +82,11 @@ class TPEN {
         }
     }
 
-    public static function delete_project($project_id, $session_id) {
+    public static function delete_project($project_id, $user) {
         $curl = curl_init();
 
         curl_setopt_array($curl, array(
-          CURLOPT_URL => TPEN_URL . "/delProject?projectID=". $project_id . "&session_id=" . $session_id,
+          CURLOPT_URL => TPEN_URL . "/delProject?projectID=". $project_id . "&user=" . $user,
           CURLOPT_RETURNTRANSFER => true,
           CURLOPT_ENCODING => "",
           CURLOPT_MAXREDIRS => 10,
