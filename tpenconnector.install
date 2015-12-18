@@ -1,0 +1,42 @@
+<?php
+
+/**
+ * @file
+ * Tpenconnector - module file
+ */
+
+/**
+ * Implement hook_install().
+ *
+ * Perform actions to set up the site for this profile.
+ */
+function tpenconnector_install() {
+    require_once 'includes/TPENSSOInfo.inc';
+    tpenconnector_sso_config();
+}
+
+
+/**
+ * Implements hook_uninstall().
+ */
+function tpenconnector_uninstall() {
+    db_delete('variable')
+        ->condition('name', 'tpenconnector_%', 'LIKE')
+        ->execute();
+}
+
+/**
+ * Remove role-specific settings.
+ */
+function tpenconnector_update_7000(&$sandbox) {
+    $vars = db_select('variable', 'v')
+        ->fields('v', array('name'))
+        ->condition('name', db_like('tpenconnector_') . '%', 'LIKE')
+        ->execute()
+        ->fetchCol();
+    foreach ($vars as $var_name) {
+        if ($var_name != 'tpenconnector_destination_logout') {
+            variable_del($var_name);
+        }
+    }
+}

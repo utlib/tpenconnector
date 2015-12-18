@@ -12,16 +12,6 @@ function tpenconnector_menu() {
     'file' => 'includes/tpenconnector.inc'
   );
 
-/*  $items['islandora/object/%islandora_object/transcribe/delete'] = array(
-    'title' => 'Transcribe with T-PEN',
-    'page callback' => 'tpenconnector_delete',
-    'page arguments' => array(2),
-    'type' => MENU_LOCAL_TASK,
-    'access callback' => 'tpenconnector_access',
-    'access arguments' => array(2),
-    'file' => 'includes/tpenconnector.inc'
-  );
-*/
   $items['islandora/object/%islandora_object/transcribe'] = array(
     'title' => 'Transcribe with T-PEN',
     'page callback' => 'tpenconnector_get_manifest',
@@ -32,7 +22,6 @@ function tpenconnector_menu() {
     'file' => 'includes/tpenconnector.inc',
     'weight' => 1
   );
-
 
   //master tpenconnector button at islandora collection page
  $items['islandora/object/%islandora_object/transcribe_master'] = array(
@@ -70,7 +59,6 @@ function tpenconnector_menu() {
     'weight' => 2
   );
 
-
   $items['islandora/object/%islandora_object/delete-tpen'] = array(
     'title' => 'Delete T-Pen project',
     'page callback' => 'drupal_get_form',
@@ -88,8 +76,55 @@ function tpenconnector_menu() {
     'access arguments' => array(2),
     'file' => 'includes/tpenconnector.inc'
   );
+
+ //share button in my projects page
+ $items['islandora/object/%islandora_object/share'] = array(
+    'title' => 'Share T-Pen project',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('tpenconnector_share',2),
+    'access callback' => 'tpenconnector_access',
+    'access arguments' => array(2),
+    'file' => 'includes/tpenconnector.inc'
+  );
+
+ //Edit button in shared with me page
+ $items['tpen/sharedproject/%/edit'] = array(
+    'title' => 'Edit shared T-Pen project',
+    'page callback' => 'tpenconnector_edit_shared_project',
+    'page arguments' => array(2),
+    'file' => 'includes/tpenconnector.inc',
+    'access arguments' => array('access content'),
+ );
+
+ //T-PEN SSO settings menu
+ $items['admin/config/system/tpenconnector'] = array(
+        'title' => 'Tpenconnector redirect settings',
+        'description' => 'Redirect after login/logout settings',
+        'page callback' => 'drupal_get_form',
+        'page arguments' => array('tpenconnector_settings_form'),
+        'access arguments' => array('tpenconnector administer'),
+ );
+
   return $items;
 }
+
+
+/*
+ * Implement hook_permission().
+ */
+function tpenconnector_permission() {
+    return array(
+        'tpenconnector administer' => array(
+            'title' => t('Administer tpenconnector module'),
+            'description' => t('Perform administration tasks for tpenconnector.'),
+        ),
+        'tpenconnector tpen administer' => array(
+            'title' => t('T-PEN admin user'),
+            'description' => t('Define as admin user for T-PEN.'),
+        ),
+    );
+}
+
 
 /**
  * Determines whether or not to show this modules tab.
@@ -207,3 +242,186 @@ function tpenconnector_theme_registry_alter(&$theme_registry) {
     $theme_registry['islandora_basic_collection_grid']['includes'][] = $path.'/theme/'.$file;
   }
 }
+
+
+
+/**
+ * ----------------------------
+ * T-PEN SSO settings code start
+ * ----------------------------
+ */
+
+/**
+ * @param string $str
+ * @param bool $isBinary whether to encrypt as binary or not. Default is: false
+ * @return string Encrypted data
+ */
+function tpenconnector_encrypt($str, $isBinary = false)
+{
+
+    $iv = variable_get('tpenconnector_sso_iv'); #Same as in T-PEN JAVA code
+    $key = variable_get('tpenconnector_sso_key'); #Same as in T-PEN JAVA code
+
+    $str = $isBinary ? $str : utf8_decode($str);
+    $td = mcrypt_module_open('rijndael-128', ' ', 'cbc', $iv);
+    mcrypt_generic_init($td, $key, $iv);
+    $encrypted = mcrypt_generic($td, $str);
+    mcrypt_generic_deinit($td);
+    mcrypt_module_close($td);
+    return $isBinary ? $encrypted : bin2hex($encrypted);
+}
+
+function tpenconnector_user_login($account) {
+
+    if (variable_get('tpenconnector_redirect')==1) {
+
+        global $user;
+        $tp_username = $user->name;
+        $tp_email = $user->mail;
+        if(user_access('tpenconnector tpen administer')) { $tp_role = 1; } else { $tp_role = 0; }
+
+        // Grab the previous page url before login
+        $destination = drupal_get_destination();
+        $destination = $destination['destination'];
+
+        // if it is login page, redirect to the homepage,
+        if ($destination=='user/login') {
+            $redirect_uri = $GLOBALS['base_url'];
+        }
+        // else redirect to the previous page.
+        else {
+            $redirect_uri = $GLOBALS['base_url']."/".$destination;
+        }
+
+        $tpen_login_uri = variable_get('tpenconnector_destination_login');
+
+        $data = array(
+            "username"=> $tp_username,
+            "email"=>$tp_email,
+            "role"=>$tp_role,
+            "redirect_uri"=> $redirect_uri
+        );
+        $string = http_build_query($data);
+
+        $encrypted_string = tpenconnector_encrypt($string, $isBinary = false);
+
+        // Redirect the user. We need to prevent the redirect from being cached.
+        header('Cache-Control: max-age=0', TRUE);
+        header('Expires: Sun, 09 Aug 1987 22:00:00 +0100', TRUE);
+        header('Pragma: no-cache', TRUE);
+        header('Location: '.$tpen_login_uri.'?'.$encrypted_string, TRUE, 302);
+        exit;
+
+    }
+}
+
+
+/**
+ * Implements hook_user_logout().
+ */
+function tpenconnector_user_logout($account) {
+    //if ((variable_get('tpenconnector_redirect')==1) && user_access('tpenconnector redirect user')) {
+    if ((variable_get('tpenconnector_redirect')==1)) {
+        $destination = &drupal_static(__FUNCTION__);
+        $destination = token_replace(variable_get('tpenconnector_destination_logout', ''));
+    }
+}
+
+/**
+ * Implements hook_drupal_goto_alter().
+ */
+function tpenconnector_drupal_goto_alter(&$path, &$options, &$http_response_code) {
+
+    $destination = &drupal_static('tpenconnector_user_logout');
+
+    if (!$path && $destination) {
+        $options = array();
+        $logout_message = variable_get('tpenconnector_logout_message', '');
+        if (!empty($logout_message)) {
+            $options['query'] = array('logout-message' => 1);
+        }
+        drupal_goto($destination, $options);
+    }
+
+}
+
+
+/**
+ * Implements hook_page_build().
+ */
+function tpenconnector_page_build(&$page) {
+    // Set logout message.
+    if (!empty($_GET['logout-message']) && !user_is_logged_in()) {
+        //$logout_message = variable_get('tpenconnector_logout_message', '');
+        $logout_message = 'Successfully logged out';
+        drupal_set_message(check_plain($logout_message));
+    }
+    elseif (!empty($_GET['logout-message']) && user_is_logged_in()) {
+        $destination = drupal_get_destination();
+        $arg = arg();
+        if (!empty($arg)) {
+            $destination = implode('/', $arg);
+        }
+        drupal_goto($destination);
+    }
+}
+
+
+/**
+ * Settings form.
+ */
+function tpenconnector_settings_form() {
+
+    require_once 'includes/TPENSSOInfo.inc';
+    tpenconnector_sso_config();
+
+    $form = array();
+
+    $form['tpenconnector_redirect'] = array(
+        '#type' => 'checkbox',
+        '#default_value' => variable_get('tpenconnector_redirect'),
+        '#title' => t('Turn on T-PEN SSO'),
+    );
+    $form['tpenconnector_destination_login'] = array(
+        '#type' => 'textfield',
+        '#title' => t('User redirect destination after login'),
+        '#description' => t('Enter the login destination of the T-PEN application. Ex. https://tpenurl/loginHook'),
+        '#size' => 100,
+        '#required' => TRUE,
+        '#default_value' => variable_get('tpenconnector_destination_login'),
+    );
+    $form['tpenconnector_destination_logout'] = array(
+        '#type' => 'textfield',
+        '#title' => t('User redirect destination after logout'),
+        '#description' => t('Enter the logout destination of the T-PEN application. Ex. https://tpenurl/logoutHook?redirect_uri=https://thisSiteUrl'),
+        '#size' => 100,
+        '#required' => TRUE,
+        '#default_value' => variable_get('tpenconnector_destination_logout'),
+    );
+
+    $form['tpenconnector_sso_iv'] = array(
+        '#type' => 'textfield',
+        '#title' => t('T-PEN SSO IV'),
+        '#description' => t('16 characters - this should be identical with the IV value in T-PEN Java code.'),
+        '#size' => 20,
+        '#required' => TRUE,
+        '#default_value' => variable_get('tpenconnector_sso_iv'),
+    );
+
+    $form['tpenconnector_sso_key'] = array(
+        '#type' => 'textfield',
+        '#title' => t('T-PEN SSO Key'),
+        '#description' => t('16 characters - this should be identical with the Key value in T-PEN Java code'),
+        '#size' => 20,
+        '#required' => TRUE,
+        '#default_value' => variable_get('tpenconnector_sso_key'),
+    );
+
+    return system_settings_form($form);
+}
+
+/**
+ * ----------------------------
+ * T-PEN SSO settings code end
+ * ----------------------------
+ */

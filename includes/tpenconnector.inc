@@ -5,7 +5,7 @@
  */
 
 function tpenconnector_get_manifest($object_pid = '') {
-
+    global $user;
     $session_id = TPEN::login();
 
     if ($session_id) {
@@ -21,7 +21,7 @@ function tpenconnector_get_manifest($object_pid = '') {
                  preg_match('/[0-9]*$/', $master_uri, $project_id_matches);
                  $project_id = $project_id_matches[0];
              
-                 $uri = TPEN::copy_project($project_id, $session_id);
+                 $uri = TPEN::copy_project($project_id, $user->name);
              
                  //$uri = "http://tpendev:8080/tpen/project/4363";
              
@@ -37,8 +37,9 @@ function tpenconnector_get_manifest($object_pid = '') {
     }
 }
 
+
 function tpenconnector_get_manifest_master($object_pid = '', $from_menutab = FALSE) {
-    
+    global $user;
     $session_id = TPEN::login();
 
     if ($session_id) {
@@ -47,7 +48,7 @@ function tpenconnector_get_manifest_master($object_pid = '', $from_menutab = FAL
         if (!$from_menutab) {
           if (!$uri) {
               $manifest = islandora_datastream_load("SC", $object_pid);
-              $uri = TPEN::create_project($manifest);
+              $uri = TPEN::create_project($manifest, $object_pid, $user->name);
               //$uri = "http://tpendev:8080/tpen/project/4363";
 
               // add uri to drupal for this user
@@ -64,7 +65,7 @@ function tpenconnector_get_manifest_master($object_pid = '', $from_menutab = FAL
 
           if (!$uri) {
             $manifest = islandora_datastream_load("SC", $object_pid);
-            $uri = TPEN::create_project($manifest);
+            $uri = TPEN::create_project($manifest, $object_pid, $user->name);
             MasterTPENProjectContentType::add_master_tpen_project_node($object_pid, $uri);
           }
           $url = $uri . "/transcribe?session_id=" . $session_id;
@@ -145,6 +146,7 @@ function tpenconnector_master_delete($form, &$form_state, $prefix) {
 }
 
 function _delete_project($form, &$form_state) {
+    global $user;
     $object_pid = $form_state['values']['object_pid'];
 
     $session_id = TPEN::login();
@@ -157,7 +159,7 @@ function _delete_project($form, &$form_state) {
            preg_match('/[0-9]*$/', $uri, $project_id_matches);
            $project_id = $project_id_matches[0];
            // delete project in TPEN first, and only proceed if successful
-           if (TPEN::delete_project($project_id, $session_id) !== false) {
+           if (TPEN::delete_project($project_id, $user->name) !== false) {
               TPENProjectContentType::remove_tpen_project_node($object_pid, $uri);
               $form_state['redirect'] = '/my-transcriptions';
               drupal_set_message(t('T-PEN project removed successfully'));
@@ -172,6 +174,7 @@ function _delete_project($form, &$form_state) {
 }
 
 function _delete_project_master($form, &$form_state) {
+    global $user;
     $object_pid = $form_state['values']['object_pid'];
 
     $session_id = TPEN::login();
@@ -185,7 +188,7 @@ function _delete_project_master($form, &$form_state) {
            preg_match('/[0-9]*$/', $uri, $project_id_matches);
            $project_id = $project_id_matches[0];
            // delete project in TPEN first, and only proceed if successful
-           if (TPEN::delete_project($project_id, $session_id) !== false) {
+           if (TPEN::delete_project($project_id, $user->name) !== false) {
               MasterTPENProjectContentType::remove_master_tpen_project_node($object_pid, $uri);
               $form_state['redirect'] = '/master-transcriptions';
               drupal_set_message(t('Master T-PEN project removed successfully'));
@@ -200,5 +203,60 @@ function _delete_project_master($form, &$form_state) {
 }
 
 
+function tpenconnector_share($form, &$form_state, $prefix) {
+
+    global $user;
+    $eq = new EntityFieldQuery();
+    $eq->entityCondition('entity_type', 'node')
+        ->entityCondition('bundle', 't_pen_projects')
+        ->propertyCondition('status', 1)
+        ->propertyCondition('uid', $user->uid)
+        ->fieldCondition('field_pid', 'value', $prefix, '=');
+
+    $result = $eq->execute();
+
+    $node = node_load(key($result['node']));
+
+    $object_pid = $node->field_pid['und'][0]['value'];
+
+    $session_id = TPEN::login();
+
+    if ($session_id) {
+
+        // first, check if a project already exists in drupal for this user/ms
+        $uri = TPENProjectContentType::check_existing_project($object_pid);
 
 
+        if ($uri) {
+            // the project id is the numerical suffix of the tpen uri
+            preg_match('/[0-9]*$/', $uri, $project_id_matches);
+            $project_id = $project_id_matches[0];
+
+            if(!empty($project_id)) {
+                $url = TPEN_URL . "/project.html?projectID=" .$project_id;
+                drupal_goto($url, array('external' => TRUE));
+            }else {
+                $form_state['redirect'] = '/my-transcriptions';
+                drupal_set_message(t('Unable to share project from T-PEN app.'), 'error');
+            }
+
+        }
+    }else {
+        echo "Error logging into T-PEN!";
+    }
+
+}
+
+function tpenconnector_edit_shared_project($project_id) {
+
+    $session_id = TPEN::login();
+
+    if ($session_id) {
+
+        $url = TPEN_URL . "/newberryTrans.html?projectID=" .$project_id;
+        drupal_goto($url, array('external' => TRUE));
+
+    }else {
+        echo "Error logging into T-PEN!";
+    }
+}
