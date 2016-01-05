@@ -12,6 +12,7 @@ function tpenconnector_get_manifest($object_pid = '') {
         // first, check if a project already exists in drupal for this user/ms 
 
         $uri = TPENProjectContentType::check_existing_project($object_pid);
+
         if (!$uri) {
             // copy the master project
             $master_uri = MasterTPENProjectContentType::check_existing_project($object_pid);
@@ -45,10 +46,17 @@ function tpenconnector_get_manifest_master($object_pid = '', $from_menutab = FAL
     if ($session_id) {
         // first, check if a project already exists in drupal for this user/ms 
         $uri = MasterTPENProjectContentType::check_existing_project($object_pid);
+        $object_from_pid = islandora_object_load($object_pid);
+        $title = $object_from_pid->label;
+
+        if (strlen($title) >= 500) {
+          $title = substr($title)."&hellip;";
+        }
+
         if (!$from_menutab) {
           if (!$uri) {
               $manifest = islandora_datastream_load("SC", $object_pid);
-              $uri = TPEN::create_project($manifest, $object_pid, $user->name);
+              $uri = TPEN::create_project($manifest, $title, $user->name);
               //$uri = "http://tpendev:8080/tpen/project/4363";
 
               // add uri to drupal for this user
@@ -65,7 +73,7 @@ function tpenconnector_get_manifest_master($object_pid = '', $from_menutab = FAL
 
           if (!$uri) {
             $manifest = islandora_datastream_load("SC", $object_pid);
-            $uri = TPEN::create_project($manifest, $object_pid, $user->name);
+            $uri = TPEN::create_project($manifest, $title, $user->name);
             MasterTPENProjectContentType::add_master_tpen_project_node($object_pid, $uri);
           }
           $url = $uri . "/transcribe?session_id=" . $session_id;
