@@ -46,7 +46,7 @@ function tpenconnector_get_manifest_master($object_pid = '', $from_menutab = FAL
     $object_from_pid = islandora_object_load($object_pid);
     $title = $object_from_pid->label;
     if (strlen($title) >= 500) {
-      $title = substr($title)."&hellip;";
+      $title = substr($title,0,500)."...";
     }
 
     if ($session_id) {
@@ -56,12 +56,12 @@ function tpenconnector_get_manifest_master($object_pid = '', $from_menutab = FAL
         if (!$from_menutab) {
           if (!$uri) {
               $manifest = islandora_datastream_load("SC", $object_pid);
-              $uri = TPEN::create_project($manifest, $title, $user->name);
+              $uri = TPEN::create_project($manifest, urlencode($title), $user->name);
               //$uri = "http://tpendev:8080/tpen/project/4363";
 
               // add uri to drupal for this user
               MasterTPENProjectContentType::add_master_tpen_project_node($object_pid, $uri);
-              drupal_set_message(t('Successfully created Master T-PEN Project for '.$title), 'status');
+              drupal_set_message(t('Successfully created Master T-PEN Project for '.$title . ' ('.$object_pid.')'), 'status');
               echo "success";
           } else {
 
@@ -73,7 +73,7 @@ function tpenconnector_get_manifest_master($object_pid = '', $from_menutab = FAL
 
           if (!$uri) {
             $manifest = islandora_datastream_load("SC", $object_pid);
-            $uri = TPEN::create_project($manifest, $title, $user->name);
+            $uri = TPEN::create_project($manifest, urlencode($title), $user->name);
             MasterTPENProjectContentType::add_master_tpen_project_node($object_pid, $uri);
           }
           $url = $uri . "/transcribe?session_id=" . $session_id;
