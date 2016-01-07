@@ -372,9 +372,6 @@ function tpenconnector_page_build(&$page) {
  */
 function tpenconnector_settings_form() {
 
-    require_once 'includes/TPENSSOInfo.inc';
-    tpenconnector_sso_config();
-
     $form = array();
 
     $form['tpenconnector_redirect'] = array(
