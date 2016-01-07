@@ -60,7 +60,7 @@ class TPEN {
         $curl = curl_init();
 
         curl_setopt_array($curl, array(
-          CURLOPT_URL => TPEN_URL . "/copyProject?projectID=". $project_id . "&user=" . $user,
+          CURLOPT_URL => TPEN_URL . "/copyProjectWithAnnotations?projectID=". $project_id . "&user=" . $user,
           CURLOPT_RETURNTRANSFER => true,
           CURLOPT_ENCODING => "",
           CURLOPT_MAXREDIRS => 10,
