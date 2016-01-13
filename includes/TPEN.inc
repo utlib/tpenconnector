@@ -6,7 +6,7 @@ class TPEN {
     public static function login() {
         $curl = curl_init();
         curl_setopt_array($curl, array(
-            CURLOPT_URL => TPEN_URL . "/login",
+            CURLOPT_URL => variable_get('tpenconnector_tpen_url') . "/login",
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_ENCODING => "",
             CURLOPT_MAXREDIRS => 10,
@@ -33,7 +33,7 @@ class TPEN {
         $curl = curl_init();
 
         curl_setopt_array($curl, array(
-          CURLOPT_URL => TPEN_URL . "/createProject?title=" . $title . "&user=" . $user,
+          CURLOPT_URL => variable_get('tpenconnector_tpen_url') . "/createProject?title=" . $title . "&user=" . $user,
           CURLOPT_RETURNTRANSFER => true,
           CURLOPT_ENCODING => "",
           CURLOPT_MAXREDIRS => 10,
@@ -60,7 +60,7 @@ class TPEN {
         $curl = curl_init();
 
         curl_setopt_array($curl, array(
-          CURLOPT_URL => TPEN_URL . "/copyProjectWithAnnotations?projectID=". $project_id . "&user=" . $user,
+          CURLOPT_URL => variable_get('tpenconnector_tpen_url') . "/copyProjectWithAnnotations?projectID=". $project_id . "&user=" . $user,
           CURLOPT_RETURNTRANSFER => true,
           CURLOPT_ENCODING => "",
           CURLOPT_MAXREDIRS => 10,
@@ -86,7 +86,7 @@ class TPEN {
         $curl = curl_init();
 
         curl_setopt_array($curl, array(
-          CURLOPT_URL => TPEN_URL . "/delProject?projectID=". $project_id . "&user=" . $user,
+          CURLOPT_URL => variable_get('tpenconnector_tpen_url') . "/delProject?projectID=". $project_id . "&user=" . $user,
           CURLOPT_RETURNTRANSFER => true,
           CURLOPT_ENCODING => "",
           CURLOPT_MAXREDIRS => 10,

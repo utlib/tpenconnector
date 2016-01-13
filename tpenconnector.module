@@ -379,6 +379,14 @@ function tpenconnector_settings_form() {
         '#default_value' => variable_get('tpenconnector_redirect'),
         '#title' => t('Turn on T-PEN SSO'),
     );
+    $form['tpenconnector_ten_url'] = array(
+        '#type' => 'textfield',
+        '#title' => t('T-PEN application url'),
+        '#description' => t(''),
+        '#size' => 100,
+        '#required' => TRUE,
+        '#default_value' => variable_get('tpenconnector_tpen_url'),
+    );
     $form['tpenconnector_destination_login'] = array(
         '#type' => 'textfield',
         '#title' => t('User redirect destination after login'),

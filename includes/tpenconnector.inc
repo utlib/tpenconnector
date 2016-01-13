@@ -241,7 +241,7 @@ function tpenconnector_share($form, &$form_state, $prefix) {
             $project_id = $project_id_matches[0];
 
             if(!empty($project_id)) {
-                $url = TPEN_URL . "/project.html?projectID=" .$project_id;
+                $url = variable_get('tpenconnector_tpen_url') . "/project.html?projectID=" .$project_id;
                 drupal_goto($url, array('external' => TRUE));
             }else {
                 $form_state['redirect'] = '/my-transcriptions';
@@ -261,7 +261,7 @@ function tpenconnector_edit_shared_project($project_id) {
 
     if ($session_id) {
 
-        $url = TPEN_URL . "/newberryTrans.html?projectID=" .$project_id;
+        $url = variable_get('tpenconnector_tpen_url') . "/newberryTrans.html?projectID=" .$project_id;
         drupal_goto($url, array('external' => TRUE));
 
     }else {
