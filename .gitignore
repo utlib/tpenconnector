@@ -1,4 +1,2 @@
-includes/TPENConnInfo.inc
-includes/TPENSSOInfo.inc
 node_modules/
 .sass-cache/
