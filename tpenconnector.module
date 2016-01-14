@@ -377,11 +377,12 @@ function tpenconnector_settings_form() {
     $form['tpenconnector_redirect'] = array(
         '#type' => 'checkbox',
         '#default_value' => variable_get('tpenconnector_redirect'),
-        '#title' => t('Turn on T-PEN SSO'),
+        '#title' => t('Turn on T-PEN SSO. <br />Below variables can be changed in settings.php'),
     );
     $form['tpenconnector_ten_url'] = array(
         '#type' => 'textfield',
         '#title' => t('T-PEN application url'),
+        '#disabled' => TRUE,
         '#description' => t(''),
         '#size' => 100,
         '#required' => TRUE,
@@ -390,7 +391,7 @@ function tpenconnector_settings_form() {
     $form['tpenconnector_destination_login'] = array(
         '#type' => 'textfield',
         '#title' => t('User redirect destination after login'),
-        '#description' => t('Enter the login destination of the T-PEN application. Ex. https://tpenurl/loginHook'),
+        '#disabled' => TRUE,
         '#size' => 100,
         '#required' => TRUE,
         '#default_value' => variable_get('tpenconnector_destination_login'),
@@ -398,7 +399,7 @@ function tpenconnector_settings_form() {
     $form['tpenconnector_destination_logout'] = array(
         '#type' => 'textfield',
         '#title' => t('User redirect destination after logout'),
-        '#description' => t('Enter the logout destination of the T-PEN application. Ex. https://tpenurl/logoutHook?redirect_uri=https://thisSiteUrl'),
+        '#disabled' => TRUE,
         '#size' => 100,
         '#required' => TRUE,
         '#default_value' => variable_get('tpenconnector_destination_logout'),
@@ -407,7 +408,8 @@ function tpenconnector_settings_form() {
     $form['tpenconnector_sso_iv'] = array(
         '#type' => 'textfield',
         '#title' => t('T-PEN SSO IV'),
-        '#description' => t('16 characters - this should be identical with the IV value in T-PEN Java code.'),
+        '#disabled' => TRUE,
+        '#description' => t('16 byte code identical with the IV value in T-PEN Java code.'),
         '#size' => 20,
         '#required' => TRUE,
         '#default_value' => variable_get('tpenconnector_sso_iv'),
@@ -416,7 +418,8 @@ function tpenconnector_settings_form() {
     $form['tpenconnector_sso_key'] = array(
         '#type' => 'textfield',
         '#title' => t('T-PEN SSO Key'),
-        '#description' => t('16 characters - this should be identical with the Key value in T-PEN Java code'),
+        '#disabled' => TRUE,
+        '#description' => t('16 byte code identical with the Key value in T-PEN Java code'),
         '#size' => 20,
         '#required' => TRUE,
         '#default_value' => variable_get('tpenconnector_sso_key'),
