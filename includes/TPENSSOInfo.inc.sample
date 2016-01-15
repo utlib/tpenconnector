@@ -1,32 +1,8 @@
-<?php
+<?php  
+// below tpenconnector variables should be in settings.php
 
-function tpenconnector_sso_config () {
-
-    require_once 'TPENConnInfo.inc';
-
-    // get the current site's url
-    global $base_url;
-
-    $tpen_sso_variables = array();
-    $tpen_sso_variables['tpenconnector_redirect'] = 1;
-    $tpen_sso_variables['tpenconnector_destination_login'] = TPEN_URL.'/loginHook';
-    $tpen_sso_variables['tpenconnector_destination_logout'] = TPEN_URL.'/logoutHook?redirect_uri='.$base_url;
-    $tpen_sso_variables['tpenconnector_sso_iv'] = '***REMOVED***';
-    $tpen_sso_variables['tpenconnector_sso_key'] = '***REMOVED***';
-
-    foreach ($tpen_sso_variables as $name => $value) {
-        variable_set($name, $value);
-    }
-
-}
-
--------------------------------------------------------------
-
-Above code will set tpen SSO variables while installing tpenconnector module.
-The default variables can be found and configured here: admin/config/system/tpenconnector
-
-- Turn on T-PEN SSO: checked
-- User redirect destination after login: ***REMOVED***/loginHook
-- User redirect destination after logout: ***REMOVED***/logoutHook?redirect_uri=sl-paleographydev.library.utoronto.ca
-- T-PEN SSO IV: ***REMOVED***
-- T-PEN SSO Key: ***REMOVED***
+$conf['tpenconnector_tpen_url'] = [TPEN SERVER URL];
+$conf['tpenconnector_destination_login'] = [TPEN SERVER LOGIN DESTINATION];
+$conf['tpenconnector_destination_logout'] = [TPEN SERVER LOGIN DESTINATION].'?redirect_uri='.$base_url;;
+$conf['tpenconnector_sso_iv'] = [16 BYTE CODE - SAME WITH T-PEN IV]
+$conf['tpenconnector_sso_key'] = [16 BYTE CODE - SAME WITH T-PEN KEY]
