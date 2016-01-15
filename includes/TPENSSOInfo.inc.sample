@@ -1,8 +1,8 @@
-<? 
+<?php  
 // below tpenconnector variables should be in settings.php
 
-$conf['tpenconnector_tpen_url'] = '***REMOVED***';
-$conf['tpenconnector_destination_login'] = '***REMOVED***/loginHook';
-$conf['tpenconnector_destination_logout'] = '***REMOVED***/logoutHook?redirect_uri='.$base_url;;
-$conf['tpenconnector_sso_iv'] = '***REMOVED***'; // 16 bytes code identical with the IV value in T-PEN Java code
-$conf['tpenconnector_sso_key'] = '***REMOVED***'; // 16 byte code identical with the Key value in T-PEN Java code 
+$conf['tpenconnector_tpen_url'] = [TPEN SERVER URL];
+$conf['tpenconnector_destination_login'] = [TPEN SERVER LOGIN DESTINATION];
+$conf['tpenconnector_destination_logout'] = [TPEN SERVER LOGIN DESTINATION].'?redirect_uri='.$base_url;;
+$conf['tpenconnector_sso_iv'] = [16 BYTE CODE - SAME WITH T-PEN IV]
+$conf['tpenconnector_sso_key'] = [16 BYTE CODE - SAME WITH T-PEN KEY]
