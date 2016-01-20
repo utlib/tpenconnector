@@ -59,7 +59,7 @@ function tpenconnector_get_manifest_master($object_pid = '', $from_menutab = FAL
       } else {
 
         // add /transcribe to URI for transcription interface URL
-        header("Location: " . $uri . "/transcribe?session_id=" . $session_id);
+        header("Location: " . $uri . "/transcribe");
       }
     } else {
       //it's being called from the menu tab at book page
@@ -69,7 +69,7 @@ function tpenconnector_get_manifest_master($object_pid = '', $from_menutab = FAL
         $uri = TPEN::create_project($manifest, urlencode($title), $user->name);
         MasterTPENProjectContentType::add_master_tpen_project_node($object_pid, $uri);
       }
-      $url = $uri . "/transcribe?session_id=" . $session_id;
+      $url = $uri . "/transcribe";
       drupal_goto($url, array('external' => TRUE));
     }
       
