@@ -29,8 +29,11 @@ function tpenconnector_get_manifest($object_pid = '') {
         }
     }
 
+    preg_match('/[0-9]*$/', $uri, $project_id_matches);
+    $project_id = $project_id_matches[0];
+
     // add /transcribe to URI for transcription interface URL
-    header("Location: " . $uri . "/transcribe");
+    header("Location: " . variable_get('tpenconnector_tpen_url') . "/project/" . $project_id . "/transcribe");
 }
 
 
@@ -58,8 +61,10 @@ function tpenconnector_get_manifest_master($object_pid = '', $from_menutab = FAL
           echo "success";
       } else {
 
+        preg_match('/[0-9]*$/', $uri, $project_id_matches);
+        $project_id = $project_id_matches[0];
         // add /transcribe to URI for transcription interface URL
-        header("Location: " . $uri . "/transcribe");
+        header("Location: " . variable_get('tpenconnector_tpen_url') . "/project/" . $project_id . "/transcribe");
       }
     } else {
       //it's being called from the menu tab at book page
@@ -69,7 +74,10 @@ function tpenconnector_get_manifest_master($object_pid = '', $from_menutab = FAL
         $uri = TPEN::create_project($manifest, urlencode($title), $user->name);
         MasterTPENProjectContentType::add_master_tpen_project_node($object_pid, $uri);
       }
-      $url = $uri . "/transcribe";
+
+      preg_match('/[0-9]*$/', $uri, $project_id_matches);
+      $project_id = $project_id_matches[0];
+      $url = variable_get('tpenconnector_tpen_url') . "/project/" . $project_id . "/transcribe";
       drupal_goto($url, array('external' => TRUE));
     }
       
