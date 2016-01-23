@@ -22,7 +22,7 @@ function tpenconnector_get_manifest($object_pid = '') {
 			
 			$uri = TPEN::copy_project($project_id, $user->name);
 			
-			if ($uri === false) {
+			if (empty($uri)) {
 				drupal_set_message('Oops.  We were not able to create your project.  Please try again and if problems persist, please contact collections@library.utoronto.ca', 'error');
 				header('Location: ' . $_SERVER['HTTP_REFERER']);
 				exit;
