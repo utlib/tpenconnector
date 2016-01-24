@@ -16,7 +16,7 @@ class TPEN {
       ));
 
       if (!empty($data)) {
-        curl_setopt($curl, CURLOPT_POSTFIELDS, $data)
+        curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
       }
 
       $response = curl_exec($curl);
