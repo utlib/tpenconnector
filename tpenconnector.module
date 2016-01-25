@@ -12,9 +12,21 @@ function tpenconnector_menu() {
     'file' => 'includes/tpenconnector.inc'
   );
 
-  $items['islandora/object/%islandora_object/transcribe'] = array(
+  $items['islandora/object/%islandora_object/load'] = array(
     'title' => 'Transcribe with T-PEN',
     'page callback' => 'tpenconnector_get_manifest',
+    'page arguments' => array(2),
+    'delivery callback' => 'ajax_deliver',
+    'type' => MENU_CALLBACK,
+    'access callback' => 'tpenconnector_access',
+    'access arguments' => array(2),
+    'file' => 'includes/tpenconnector.inc',
+    'weight' => 1
+  );
+
+  $items['islandora/object/%islandora_object/transcribe'] = array(
+    'title' => 'Transcribe with T-PEN',
+    'page callback' => 'tpenconnector_load_manifest',
     'page arguments' => array(2),
     'type' => MENU_LOCAL_TASK,
     'access callback' => 'tpenconnector_access',
@@ -22,6 +34,8 @@ function tpenconnector_menu() {
     'file' => 'includes/tpenconnector.inc',
     'weight' => 1
   );
+
+
 
   //master tpenconnector button at islandora collection page
  $items['islandora/object/%islandora_object/transcribe_master'] = array(

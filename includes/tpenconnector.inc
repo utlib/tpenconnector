@@ -4,6 +4,46 @@
  * This file is where non Drupal hooks code live
  */
 
+function tpenconnector_load_manifest($object_pid = '') {
+    global $base_url;
+    return <<<EOS
+<div class="status-bg"></div>
+<div class="status-msg">
+<span id="tpenHeader">Loading T-PEN...</span>
+<div class="sk-circle" id="spinner">
+  <div class="sk-circle1 sk-child"></div>
+  <div class="sk-circle2 sk-child"></div>
+  <div class="sk-circle3 sk-child"></div>
+  <div class="sk-circle4 sk-child"></div>
+  <div class="sk-circle5 sk-child"></div>
+  <div class="sk-circle6 sk-child"></div>
+  <div class="sk-circle7 sk-child"></div>
+  <div class="sk-circle8 sk-child"></div>
+  <div class="sk-circle9 sk-child"></div>
+  <div class="sk-circle10 sk-child"></div>
+  <div class="sk-circle11 sk-child"></div>
+  <div class="sk-circle12 sk-child"></div>
+</div>
+<p id="tpenMessage"></p>
+</div>
+
+
+<script>
+(function($) {
+
+$.get("$base_url/islandora/object/$object_pid/load", function(data) {
+   window.location.href = data[1].data;
+}).fail(function() {
+	$("#spinner").remove();
+	$("#tpenHeader").text('T-PEN has timed out.');
+	$("#tpenMessage").text('We were not able to create your project.  Please try again and if problems persist, please contact collections@library.utoronto.ca');
+});
+
+}( jQuery ));
+</script>
+EOS;
+}
+
 function tpenconnector_get_manifest($object_pid = '') {
     global $user;
 
@@ -33,7 +73,7 @@ function tpenconnector_get_manifest($object_pid = '') {
     $project_id = $project_id_matches[0];
 
     // add /transcribe to URI for transcription interface URL
-    header("Location: " . variable_get('tpenconnector_tpen_url') . "/project/" . $project_id . "/transcribe");
+    return variable_get('tpenconnector_tpen_url') . "/project/" . $project_id . "/transcribe";
 }
 
 
@@ -57,7 +97,7 @@ function tpenconnector_get_manifest_master($object_pid = '', $from_menutab = FAL
 
           // add uri to drupal for this user
           MasterTPENProjectContentType::add_master_tpen_project_node($object_pid, $uri);
-          drupal_set_message(t('Successfully created Master T-PEN Project for '.$title . ' ('.$object_pid.')'), 'status');
+          drupal_set_message(t('Successfully created Master Ts timed out.-PEN Project for '.$title . ' ('.$object_pid.')'), 'status');
           echo "success";
       } else {
 
