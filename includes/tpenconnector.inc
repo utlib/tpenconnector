@@ -9,7 +9,7 @@ function tpenconnector_load_manifest($object_pid = '') {
     return <<<EOS
 <div class="status-bg"></div>
 <div class="status-msg">
-<span id="tpenHeader">Loading T-PEN. Please wait a moment while the French Renaissance Paleography site loads your T-PEN Project. This process can take up to 2 minutes.</span>
+<span id="tpenHeader">Loading T-PEN. Please wait a moment while the French Renaissance Paleography site loads your T-PEN Project.<br />This process can take up to 2 minutes.</span>
 <div class="sk-circle" id="spinner">
   <div class="sk-circle1 sk-child"></div>
   <div class="sk-circle2 sk-child"></div>
