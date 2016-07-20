@@ -30,6 +30,10 @@ INSTALLATION
 	To assign an admin role for T-PEN app, check 'Administrator' and 'Paleography Administrator' in the 'T-PEN admin user' block.
 	
 
+
+COPYRIGHT AND LICENSE
+---------------------
+
  Copyright 2016 University of Toronto Libraries
 
    Licensed under the Apache License, Version 2.0 (the "License");
